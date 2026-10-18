@@ -1,3 +1,4 @@
+import { language, t as i18nText } from "../../i18n";
 // Ocean Studio map: offline vector basemap (Natural Earth 1:50m / 1:10m), optional NASA GIBS imagery,
 // bundled glyphs for labels, and stable anchors for data layers.
 import maplibregl from "maplibre-gl";
@@ -28,17 +29,17 @@ export class StudioMap {
     this.theme = theme; const c = PALETTE[theme], base = basemapStyle(c);
     const sources: any = { ...base.sources,
       gibs: { type: "raster", tiles: ["https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg"], tileSize: 256, maxzoom: 8,
-        attribution: "影像 NASA GIBS Blue Marble" },
+        attribution: i18nText("影像 NASA GIBS Blue Marble") },
       seas: { type: "geojson", data: { type: "FeatureCollection", features: SEAS.map(s => ({ type: "Feature", properties: { zh: s[0], en: s[1], rank: s[4] }, geometry: { type: "Point", coordinates: [s[2], s[3]] } })) } },
       gratlabels: { type: "geojson", data: graticuleLabels() } };
     const layers: any[] = [...base.layers];
     layers.splice(1, 0, { id: "satellite", type: "raster", source: "gibs", layout: { visibility: "none" }, paint: { "raster-opacity": 1, "raster-fade-duration": 200, "raster-saturation": -0.15 } });
     layers.push(
       { id: "grat-labels", type: "symbol", source: "gratlabels", layout: { "text-field": ["get", "t"], "text-font": FONT, "text-size": 10, "text-allow-overlap": false }, paint: { "text-color": c.grid, "text-opacity": 0.55, "text-halo-color": c.halo, "text-halo-width": 1 } },
-      { id: "sea-labels", type: "symbol", source: "seas", filter: ["<=", ["get", "rank"], 2], layout: { "text-field": ["format", ["get", "zh"], { "font-scale": 1 }, "\n", {}, ["get", "en"], { "font-scale": 0.74 }],
+      { id: "sea-labels", type: "symbol", source: "seas", filter: ["<=", ["get", "rank"], 2], layout: { "text-field": language === "en" ? ["get", "en"] : ["format", ["get", "zh"], { "font-scale": 1 }, "\n", {}, ["get", "en"], { "font-scale": 0.74 }],
         "text-font": FONT, "text-size": ["interpolate", ["linear"], ["zoom"], 1, ["match", ["get", "rank"], 1, 13, 10.5], 6, ["match", ["get", "rank"], 1, 17, 13]], "text-letter-spacing": 0.12,
         "text-max-width": 12, "text-allow-overlap": false, "symbol-sort-key": ["get", "rank"] }, paint: { "text-color": c.seaLabel, "text-halo-color": c.halo, "text-halo-width": 0.6 } },
-      { id: "sea-labels-minor", type: "symbol", source: "seas", minzoom: 3, filter: [">", ["get", "rank"], 2], layout: { "text-field": ["get", "zh"], "text-font": FONT, "text-size": 11, "text-letter-spacing": 0.08, "text-allow-overlap": false },
+      { id: "sea-labels-minor", type: "symbol", source: "seas", minzoom: 3, filter: [">", ["get", "rank"], 2], layout: { "text-field": ["get", language === "en" ? "en" : "zh"], "text-font": FONT, "text-size": 11, "text-letter-spacing": 0.08, "text-allow-overlap": false },
         paint: { "text-color": c.seaLabel, "text-halo-color": c.halo, "text-halo-width": 0.6 } },
     );
     this.map = new maplibregl.Map({
@@ -46,7 +47,7 @@ export class StudioMap {
       localIdeographFontFamily: "'PingFang SC','Microsoft YaHei UI','Microsoft YaHei','Noto Sans SC',sans-serif",
       style: { version: 8, glyphs: "/glyphs/{fontstack}/{range}.pbf", sources, layers } as any,
     });
-    this.map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "海岸线 Natural Earth · 数据来自本地数据目录" }), "bottom-right");
+    this.map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: i18nText("海岸线 Natural Earth · 数据来自本地数据目录") }), "bottom-right");
     this.map.addControl(new maplibregl.ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-right");
     this.map.dragRotate.disable(); this.map.touchZoomRotate.disableRotation(); this.map.boxZoom.disable();
     attachDetailTiles(this.map);

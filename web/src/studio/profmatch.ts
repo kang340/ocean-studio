@@ -1,3 +1,4 @@
+import { t as i18nText } from "../i18n";
 // Model–Argo vertical profile matching.
 //   space : model column at the profile position (bilinear in the horizontal; nearest valid corner near land — /point)
 //   time  : nearest model frame within ±maxDt (no time interpolation of 3-D fields)
@@ -56,9 +57,9 @@ export async function matchProfiles(o: {
     const fr = o.frames.length ? o.frames.reduce((b, f) => (hours(f.time, p.time) < hours(b.time, p.time) ? f : b)) : null;
     const dt = fr ? hours(fr.time, p.time) : null;
     const sum: ProfileSummary = { platform: p.platform, key: p.key, cycle: p.cycle, time: p.time, modelTime: fr?.time ?? null, lon: p.lon, lat: p.lat, dtH: dt, n: 0, bias: NaN, rmse: NaN, reason: null };
-    if (!fr || dt! > o.maxDtH) { unmatched.outside_time += p.levels.length; sum.reason = `超出时间容差（最近模式时次相差 ${dt == null ? "—" : dt.toFixed(1)} h）`; profiles.push(sum); return; }
+    if (!fr || dt! > o.maxDtH) { unmatched.outside_time += p.levels.length; sum.reason = i18nText("超出时间容差（最近模式时次相差 {0} h）", dt == null ? "—" : dt.toFixed(1)); profiles.push(sum); return; }
     const col = await o.column(p, fr).catch(() => null);
-    if (!col || !col.z.length) { unmatched.outside_domain += p.levels.length; sum.reason = "剖面位置在模式范围外或该处全为缺测（陆地）"; profiles.push(sum); return; }
+    if (!col || !col.z.length) { unmatched.outside_domain += p.levels.length; sum.reason = i18nText("剖面位置在模式范围外或该处全为缺测（陆地）"); profiles.push(sum); return; }
     const mine: Pair[] = [];
     for (const L of p.levels) {
       if (L.qc === "bad" || L.qc === "missing") { unmatched.qc_excluded++; continue; }
@@ -69,7 +70,7 @@ export async function matchProfiles(o: {
       mine.push({ platform: p.platform, key: p.key, z: L.z, obs: L.v, model: r.v, dtH: dt!, dzNear: r.dz, lon: p.lon, lat: p.lat, time: p.time });
     }
     const s = stats(mine.map(x => x.obs), mine.map(x => x.model)); Object.assign(sum, { n: s.n, bias: s.bias, rmse: s.rmse, modelTime: col.time || fr.time });
-    if (!mine.length) sum.reason = "没有可匹配的有效层"; profiles.push(sum); pairs.push(...mine);
+    if (!mine.length) sum.reason = i18nText("没有可匹配的有效层"); profiles.push(sum); pairs.push(...mine);
   };
   const worker = async () => { while (queue.length) { const p = queue.shift()!; await one(p); done++; o.onProgress?.(done, o.profiles.length); } };
   for (let i = 0; i < (o.concurrency || 6); i++) work.push(worker()); await Promise.all(work);

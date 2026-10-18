@@ -1,3 +1,4 @@
+import { t as i18nText } from "../../i18n";
 // Time-series chart on uPlot (MIT, github.com/leeoniya/uPlot): drag to zoom, double-click to reset,
 // hover read-out, per-point QC marks, gaps kept as gaps, PNG/CSV export, statistics for the visible range.
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -39,7 +40,7 @@ export function TimeSeries({ series, height = 210, marker = null, title, decimal
       width, height, padding: [8, 8, 0, 0], legend: { show: false }, cursor: { drag: { x: true, y: false, setScale: true }, points: { size: 6 } },
       scales: { x: { time: true }, y: { auto: true }, y2: { auto: true } },
       axes: [{ stroke: th.muted, grid: { stroke: th.grid, width: 1 }, ticks: { stroke: th.grid, width: 1 }, font: "10.5px system-ui", size: 34,
-        values: [[3600 * 24 * 365, "{YYYY}", null, null, null, null, null, null, 1], [3600 * 24 * 28, "{MM}月", "\n{YYYY}", null, null, null, null, null, 1], [3600 * 24, "{MM}-{DD}", "\n{YYYY}", null, null, null, null, null, 1], [3600, "{HH}:00", "\n{MM}-{DD}", null, "\n{MM}-{DD}", null, null, null, 1], [60, "{HH}:{mm}", "\n{MM}-{DD}", null, "\n{MM}-{DD}", null, null, null, 1]] as any },
+        values: [[3600 * 24 * 365, "{YYYY}", null, null, null, null, null, null, 1], [3600 * 24 * 28, i18nText("{MM}月"), "\n{YYYY}", null, null, null, null, null, 1], [3600 * 24, "{MM}-{DD}", "\n{YYYY}", null, null, null, null, null, 1], [3600, "{HH}:00", "\n{MM}-{DD}", null, "\n{MM}-{DD}", null, null, null, 1], [60, "{HH}:{mm}", "\n{MM}-{DD}", null, "\n{MM}-{DD}", null, null, null, 1]] as any },
         axis("y", 3, units[0] || ""), ...(units.length > 1 && series.some(s => s.axis === 1) ? [axis("y2", 1, units[1])] : [])],
       series: [{}, ...series.map((s, i) => ({ label: s.label, scale: s.axis === 1 ? "y2" : "y", stroke: s.color || th.series[i % th.series.length], width: 1.6, dash: s.dash ? [5, 4] : undefined,
         spanGaps: false, points: { show: s.points ?? data.ts.length <= 80, size: 4, fill: s.color || th.series[i % th.series.length] },
@@ -63,14 +64,14 @@ export function TimeSeries({ series, height = 210, marker = null, title, decimal
     const mean = vs.reduce((a, b) => a + b, 0) / vs.length; return { label: s.label, unit: s.unit, n: vs.length, mean, min: Math.min(...vs), max: Math.max(...vs), std: Math.sqrt(vs.reduce((a, b) => a + (b - mean) ** 2, 0) / vs.length) };
   }), [series, data, range]);
   const csv = () => downloadText(["time_utc," + series.map(s => `${s.label} (${s.unit})${s.qc ? `,${s.label}_qc` : ""}`).join(","), ...data.ts.map((t, i) => [new Date(t * 1000).toISOString(), ...series.flatMap((s, si) => [data.cols[si][i] ?? "", ...(s.qc ? [data.qcs[si][i] ?? ""] : [])])].join(","))].join("\n"), exportName + ".csv");
-  if (!data.ts.length) return <div className="os-chart-empty">没有可绘制的时间序列</div>;
+  if (!data.ts.length) return <div className="os-chart-empty">{i18nText("没有可绘制的时间序列")}</div>;
   return <div className="os-chart">
     <div className="os-chart-head">{title && <strong>{title}</strong>}<div className="os-legend-row">{series.map((s, i) => <span key={i}><i style={{ background: s.color || th.series[i % th.series.length] }} className={s.dash ? "dash" : ""} />{s.label}</span>)}</div>
-      <div className="os-chart-tools"><button title="复位缩放（双击图表）" onClick={() => { plot.current?.setScale("x", { min: data.ts[0], max: data.ts[data.ts.length - 1] }); setRange(null); }}><RotateCcw size={13} /></button>
-        <button title="导出 PNG" onClick={() => plot.current && download((plot.current as any).ctx.canvas.toDataURL("image/png"), exportName + ".png")}><ImageDown size={13} /></button>
-        <button title="导出 CSV" onClick={csv}><Download size={13} /></button></div></div>
+      <div className="os-chart-tools"><button title={i18nText("复位缩放（双击图表）")} onClick={() => { plot.current?.setScale("x", { min: data.ts[0], max: data.ts[data.ts.length - 1] }); setRange(null); }}><RotateCcw size={13} /></button>
+        <button title={i18nText("导出 PNG")} onClick={() => plot.current && download((plot.current as any).ctx.canvas.toDataURL("image/png"), exportName + ".png")}><ImageDown size={13} /></button>
+        <button title={i18nText("导出 CSV")} onClick={csv}><Download size={13} /></button></div></div>
     <div ref={el} className="os-uplot" />
-    <div className="os-chart-stats">{stats.map((s: any, i) => <span key={i}><b>{s.label}</b>{s.n ? <>均值 {fmtN(s.mean, decimals)} · 最小 {fmtN(s.min, decimals)} · 最大 {fmtN(s.max, decimals)} · σ {fmtN(s.std, decimals)} {s.unit} · n={s.n}</> : "无有效值"}</span>)}
-      <small>拖拽框选放大，双击复位；统计排除 QC 为“错误 / 缺测”的记录{range ? "，仅限当前可见时段" : ""}</small></div>
+    <div className="os-chart-stats">{stats.map((s: any, i) => <span key={i}><b>{s.label}</b>{s.n ? <>{i18nText("均值") + " "}{fmtN(s.mean, decimals)} {" " + i18nText("· 最小") + " "}{fmtN(s.min, decimals)} {" " + i18nText("· 最大") + " "}{fmtN(s.max, decimals)} · σ {fmtN(s.std, decimals)} {s.unit} · n={s.n}</> : i18nText("无有效值")}</span>)}
+      <small>{i18nText("拖拽框选放大，双击复位；统计排除 QC 为“错误 / 缺测”的记录")}{range ? i18nText("，仅限当前可见时段") : ""}</small></div>
   </div>;
 }

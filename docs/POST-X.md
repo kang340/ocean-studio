@@ -33,6 +33,10 @@ An interactive globe for ocean & weather data. 🌏
 
 Ocean Studio is open source: 3D wind fields, wave comparisons, in-situ observations & model–observation validation. Real bundled samples. Local NetCDF / GRIB2 / CSV.
 
+Chinese / English UI. Demo uses October 2026 samples, not live data.
+
+Try it: https://ocean-studio-tan.vercel.app/ocean-studio.html?lang=en
+
 https://github.com/kang340/ocean-studio
 
 #OpenSource #DataViz

@@ -1,3 +1,4 @@
+import { t as i18nText } from "../i18n";
 // Scientific colour scales and per-quantity display conventions.
 // Stops approximate cmocean (Thyng et al. 2016, MIT) and perceptually uniform matplotlib maps.
 export type Palette = { id: string; label: string; stops: string[]; transparentLow?: boolean };
@@ -39,31 +40,31 @@ const SPEEDS = new Set(["wind_speed", "current_speed", "wind_u", "wind_v", "curr
 export function specFor(kind: string, units0: string): Spec {
   const units = canonUnit(kind, units0), u = (units || "").toLowerCase().trim();
   if (SPEEDS.has(kind) && !isMps(units)) // unrecognised speed unit: never relabel as m/s or apply m/s colour ranges
-    return { label: (kind.startsWith("wind") ? "风速" : "流速") + "（单位未识别）", palette: kind.endsWith("speed") ? (kind === "wind_speed" ? "wind" : "speed") : "balance", unit: units, symmetric: !kind.endsWith("speed"), decimals: 3 };
+    return { label: (kind.startsWith("wind") ? i18nText("风速") : i18nText("流速")) + i18nText("（单位未识别）"), palette: kind.endsWith("speed") ? (kind === "wind_speed" ? "wind" : "speed") : "balance", unit: units, symmetric: !kind.endsWith("speed"), decimals: 3 };
   switch (kind) {
-    case "air_temperature": return u === "k" ? { label: "气温", palette: "thermal", unit: "°C", convert: K, range: [-35, 40], contour: 5, decimals: 1 }
-      : { label: "气温", palette: "thermal", unit: units || "°C", range: [-35, 40], contour: 5, decimals: 1 };
-    case "sea_temperature": return u === "k" ? { label: "海温", palette: "thermal", unit: "°C", convert: K, range: [-2, 32], contour: 2, decimals: 2 }
-      : { label: "海温", palette: "thermal", unit: units || "°C", range: [-2, 32], contour: 2, decimals: 2 };
-    case "salinity": return { label: "盐度", palette: "haline", unit: units || "PSU", contour: 0.5, decimals: 2 };
-    case "pressure": return u === "pa" ? { label: "海平面气压", palette: "pressure", unit: "hPa", convert: v => v / 100, range: [970, 1040], contour: 4, decimals: 1 }
-      : { label: "气压", palette: "pressure", unit: units, contour: 4, decimals: 1 };
-    case "precipitation": return u === "m" ? { label: "降水", palette: "rain", unit: "mm", convert: v => v * 1000, range: [0.1, 40], decimals: 1 }
-      : { label: "降水", palette: "rain", unit: u === "kg m**-2" || u === "kg m-2" ? "mm" : units, range: [0.1, 40], decimals: 1 };
-    case "ssh": return { label: "海面高度", palette: "balance", unit: units || "m", symmetric: true, contour: 0.1, decimals: 3 };
-    case "wave_height": return { label: "有效波高", palette: "waves", unit: units || "m", range: [0, 8], contour: 1, decimals: 2 };
-    case "wave_period": return { label: "波周期", palette: "period", unit: units || "s", range: [2, 18], decimals: 1 };
-    case "wave_direction": return { label: "浪向（来向）", palette: "viridis", unit: "°", range: [0, 360], decimals: 0 };
-    case "sea_ice": return { label: "海冰密集度", palette: "ice", unit: units, decimals: 2 };
-    case "humidity": return { label: "相对湿度", palette: "humidity", unit: units || "%", range: [0, 100], decimals: 0 };
-    case "cloud": return { label: "云量", palette: "gray", unit: units || "%", range: [0, 100], decimals: 0 };
-    case "chlorophyll": return { label: "叶绿素", palette: "algae", unit: units, decimals: 3 };
-    case "mixed_layer": return { label: "混合层深度", palette: "speed", unit: units || "m", decimals: 1 };
-    case "wind_speed": return { label: "风速", palette: "wind", unit: "m/s", range: [0, 25], decimals: 1 };
-    case "current_speed": return { label: "流速", palette: "speed", unit: "m/s", range: [0, 1.5], decimals: 2 };
-    case "ice_speed": case "stress_speed": case "speed": return { label: "速度", palette: "speed", unit: units, decimals: 3 };
-    case "wind_u": case "wind_v": return { label: kind === "wind_u" ? "风 U 分量" : "风 V 分量", palette: "balance", unit: "m/s", symmetric: true, range: [-20, 20], decimals: 1 };
-    case "current_u": case "current_v": return { label: kind === "current_u" ? "流 U 分量" : "流 V 分量", palette: "balance", unit: "m/s", symmetric: true, range: [-1, 1], decimals: 2 };
+    case "air_temperature": return u === "k" ? { label: i18nText("气温"), palette: "thermal", unit: "°C", convert: K, range: [-35, 40], contour: 5, decimals: 1 }
+      : { label: i18nText("气温"), palette: "thermal", unit: units || "°C", range: [-35, 40], contour: 5, decimals: 1 };
+    case "sea_temperature": return u === "k" ? { label: i18nText("海温"), palette: "thermal", unit: "°C", convert: K, range: [-2, 32], contour: 2, decimals: 2 }
+      : { label: i18nText("海温"), palette: "thermal", unit: units || "°C", range: [-2, 32], contour: 2, decimals: 2 };
+    case "salinity": return { label: i18nText("盐度"), palette: "haline", unit: units || "PSU", contour: 0.5, decimals: 2 };
+    case "pressure": return u === "pa" ? { label: i18nText("海平面气压"), palette: "pressure", unit: "hPa", convert: v => v / 100, range: [970, 1040], contour: 4, decimals: 1 }
+      : { label: i18nText("气压"), palette: "pressure", unit: units, contour: 4, decimals: 1 };
+    case "precipitation": return u === "m" ? { label: i18nText("降水"), palette: "rain", unit: "mm", convert: v => v * 1000, range: [0.1, 40], decimals: 1 }
+      : { label: i18nText("降水"), palette: "rain", unit: u === "kg m**-2" || u === "kg m-2" ? "mm" : units, range: [0.1, 40], decimals: 1 };
+    case "ssh": return { label: i18nText("海面高度"), palette: "balance", unit: units || "m", symmetric: true, contour: 0.1, decimals: 3 };
+    case "wave_height": return { label: i18nText("有效波高"), palette: "waves", unit: units || "m", range: [0, 8], contour: 1, decimals: 2 };
+    case "wave_period": return { label: i18nText("波周期"), palette: "period", unit: units || "s", range: [2, 18], decimals: 1 };
+    case "wave_direction": return { label: i18nText("浪向（来向）"), palette: "viridis", unit: "°", range: [0, 360], decimals: 0 };
+    case "sea_ice": return { label: i18nText("海冰密集度"), palette: "ice", unit: units, decimals: 2 };
+    case "humidity": return { label: i18nText("相对湿度"), palette: "humidity", unit: units || "%", range: [0, 100], decimals: 0 };
+    case "cloud": return { label: i18nText("云量"), palette: "gray", unit: units || "%", range: [0, 100], decimals: 0 };
+    case "chlorophyll": return { label: i18nText("叶绿素"), palette: "algae", unit: units, decimals: 3 };
+    case "mixed_layer": return { label: i18nText("混合层深度"), palette: "speed", unit: units || "m", decimals: 1 };
+    case "wind_speed": return { label: i18nText("风速"), palette: "wind", unit: "m/s", range: [0, 25], decimals: 1 };
+    case "current_speed": return { label: i18nText("流速"), palette: "speed", unit: "m/s", range: [0, 1.5], decimals: 2 };
+    case "ice_speed": case "stress_speed": case "speed": return { label: i18nText("速度"), palette: "speed", unit: units, decimals: 3 };
+    case "wind_u": case "wind_v": return { label: kind === "wind_u" ? i18nText("风 U 分量") : i18nText("风 V 分量"), palette: "balance", unit: "m/s", symmetric: true, range: [-20, 20], decimals: 1 };
+    case "current_u": case "current_v": return { label: kind === "current_u" ? i18nText("流 U 分量") : i18nText("流 V 分量"), palette: "balance", unit: "m/s", symmetric: true, range: [-1, 1], decimals: 2 };
     default: return { label: "", palette: "viridis", unit: units, decimals: 3 };
   }
 }
@@ -100,5 +101,5 @@ export function fmt(v: number | null | undefined, decimals = 2) {
 
 /** Direction in degrees clockwise from north that a vector points towards. */
 export const bearing = (u: number, v: number) => (Math.atan2(u, v) * 180 / Math.PI + 360) % 360;
-const COMPASS = ["北", "东北偏北", "东北", "东北偏东", "东", "东南偏东", "东南", "东南偏南", "南", "西南偏南", "西南", "西南偏西", "西", "西北偏西", "西北", "西北偏北"];
+const COMPASS = [i18nText("北"), i18nText("东北偏北"), i18nText("东北"), i18nText("东北偏东"), i18nText("东"), i18nText("东南偏东"), i18nText("东南"), i18nText("东南偏南"), i18nText("南"), i18nText("西南偏南"), i18nText("西南"), i18nText("西南偏西"), i18nText("西"), i18nText("西北偏西"), i18nText("西北"), i18nText("西北偏北")];
 export const compass = (deg: number) => COMPASS[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];

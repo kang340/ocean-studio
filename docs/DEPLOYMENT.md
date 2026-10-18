@@ -1,5 +1,7 @@
 # 在线部署
 
+[简体中文](#在线部署) · [English](#english)
+
 公开体验：https://ocean-studio-tan.vercel.app/ocean-studio.html
 
 这是包含 FastAPI 和样例数据的完整应用，前端不依赖开发者本机的 localhost。Vercel 运行 Python 3.12；前端使用 Node 构建，静态资源由 CDN 分发。样例数据保留原提供方许可。
@@ -17,3 +19,21 @@
 ## 范围
 
 在线版展示仓库附带的 2026 年 10 月数据，非实时流。服务空闲后的首次请求可能冷启动；大规模计算和自己的私有数据建议本地或独立服务器运行。读取额外 GRIB2 文件仍需安装 `requirements-grib.txt`。
+
+## English
+
+Public demo: https://ocean-studio-tan.vercel.app/ocean-studio.html?lang=en
+
+This is the complete FastAPI application with sample data. The frontend does not depend on the developer’s localhost. Vercel runs Python 3.12, builds the frontend with Node and serves static assets through its CDN. Sample data retain the original provider terms.
+
+### Deploy
+
+1. Install the Vercel CLI and sign in to your own account.
+2. Run `vercel deploy` at the repository root for a preview, then `vercel deploy --prod` to publish.
+3. The first deployment of a new project may become production automatically. Use the project name and URL returned by Vercel.
+
+`pyproject.toml` pins Python and dependencies and declares `server.app:app`. `vercel.json` builds the frontend and bundles samples; `tools/prepare_vercel.py` copies built assets into `public/`. Generated `public/` and `.vercel/` directories are not committed. Video assets and node_modules are excluded from the Python function bundle.
+
+Deployment currently uses the CLI. For automatic deployment after GitHub pushes, connect GitHub in your Vercel account and link the repository to the project. No deployment credentials are stored in the repository.
+
+The public app supports `lang=zh` and `lang=en` URLs and the 中文 / EN control. It serves October 2026 samples rather than live data. Initial requests may cold-start. Run large calculations and private data locally or on a dedicated server. Extra GRIB2 files still require `requirements-grib.txt`.

@@ -1,3 +1,4 @@
+import { t as i18nText } from "../../i18n";
 // Unified time control: model valid times (dots), observation density per dataset (histogram lanes),
 // coverage bars, the observation window and a draggable cursor. Only real data times are offered.
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -41,39 +42,39 @@ export function Timeline(p: Props) {
   };
   const H = p.compact ? 40 : 30 + p.lanes.length * 14 + 14, laneY = (i: number) => 22 + i * 14;
   const dtFrame = p.frameShown != null ? (p.cursor - p.frameShown) / 3.6e6 : null;
-  return <div className={"os-timeline" + (p.compact ? " compact" : "")} aria-label="时间轴">
+  return <div className={"os-timeline" + (p.compact ? " compact" : "")} aria-label={i18nText("时间轴")}>
     <div className="tl-ctl">
-      <button className="icon" title="上一步 (←)" aria-label="上一步" onClick={() => p.step1(-1)}><SkipBack size={15} /></button>
-      <button className="icon play" title={p.playing ? "暂停 (空格)" : "播放 (空格)"} aria-label={p.playing ? "暂停" : "播放"} onClick={() => p.setPlaying(!p.playing)}>{p.playing ? <Pause size={16} /> : <Play size={16} />}</button>
-      <button className="icon" title="下一步 (→)" aria-label="下一步" onClick={() => p.step1(1)}><SkipForward size={15} /></button>
-      <button className="icon" title="停止并回到起点" aria-label="停止" onClick={p.stop}><Square size={13} /></button>
+      <button className="icon" title={i18nText("上一步 (←)")} aria-label={i18nText("上一步")} onClick={() => p.step1(-1)}><SkipBack size={15} /></button>
+      <button className="icon play" title={p.playing ? i18nText("暂停 (空格)") : i18nText("播放 (空格)")} aria-label={p.playing ? i18nText("暂停") : i18nText("播放")} onClick={() => p.setPlaying(!p.playing)}>{p.playing ? <Pause size={16} /> : <Play size={16} />}</button>
+      <button className="icon" title={i18nText("下一步 (→)")} aria-label={i18nText("下一步")} onClick={() => p.step1(1)}><SkipForward size={15} /></button>
+      <button className="icon" title={i18nText("停止并回到起点")} aria-label={i18nText("停止")} onClick={p.stop}><Square size={13} /></button>
     </div>
     <div className="tl-now">
       <strong>{fmtTime(p.cursor, p.tz)}</strong>
-      <span>{p.frameShown != null ? <>模式 {fmtTime(p.frameShown, p.tz, false)}{dtFrame && Math.abs(dtFrame) > 0.01 ? <em className={Math.abs(dtFrame) > 3 ? "warn" : ""}> Δ{dtFrame > 0 ? "+" : ""}{fmtN(dtFrame, 1)} h{p.interp && p.canInterp ? " · 插值显示" : ""}</em> : null}</> : "无模式数据"}
-        {p.lanes.length > 0 && <> · 观测 {fmtTime(p.cursor - p.windowH * 3.6e6, p.tz, false).slice(6)} – {fmtTime(p.cursor, p.tz, false).slice(6)}</>}</span>
-      {p.loading && <i className="tl-loading">读取中</i>}
+      <span>{p.frameShown != null ? <>{i18nText("模式") + " "}{fmtTime(p.frameShown, p.tz, false)}{dtFrame && Math.abs(dtFrame) > 0.01 ? <em className={Math.abs(dtFrame) > 3 ? "warn" : ""}> Δ{dtFrame > 0 ? "+" : ""}{fmtN(dtFrame, 1)} h{p.interp && p.canInterp ? i18nText(" · 插值显示") : ""}</em> : null}</> : i18nText("无模式数据")}
+        {p.lanes.length > 0 && <> {" " + i18nText("· 观测") + " "}{fmtTime(p.cursor - p.windowH * 3.6e6, p.tz, false).slice(6)} – {fmtTime(p.cursor, p.tz, false).slice(6)}</>}</span>
+      {p.loading && <i className="tl-loading">{i18nText("读取中")}</i>}
     </div>
     <svg ref={svg} className="tl-track" height={H} onPointerDown={e => { drag.current = true; (e.target as Element).setPointerCapture?.(e.pointerId); p.setPlaying(false); seek(e.clientX); }}
-      onPointerMove={e => drag.current && seek(e.clientX)} onPointerUp={() => { drag.current = false; }} role="slider" aria-valuemin={a} aria-valuemax={b} aria-valuenow={p.cursor} aria-label="当前时间">
+      onPointerMove={e => drag.current && seek(e.clientX)} onPointerUp={() => { drag.current = false; }} role="slider" aria-valuemin={a} aria-valuemax={b} aria-valuenow={p.cursor} aria-label={i18nText("当前时间")}>
       <rect x={PX} y={8} width={w - 2 * PX} height={H - 14} rx="4" className="tl-bg" />
       {ticks.map(t => <g key={t.t}><line x1={X(t.t)} x2={X(t.t)} y1={8} y2={H - 6} className={t.major ? "tl-tick major" : "tl-tick"} /><text x={X(t.t) + 3} y={H - 8} className="tl-ticklabel">{t.label}</text></g>)}
       <rect x={X(p.cursor - p.windowH * 3.6e6)} y={8} width={Math.max(1, X(p.cursor) - X(p.cursor - p.windowH * 3.6e6))} height={H - 14} className="tl-window" />
       {!p.compact && p.lanes.map((l, i) => { const y = laneY(i); return <g key={l.key}>
         <rect x={X(l.t0)} y={y + 9} width={Math.max(2, X(l.t1) - X(l.t0))} height={2} fill={l.color} opacity="0.55" rx="1" />
-        {l.hist && (() => { const mx = Math.max(...l.hist.counts, 1); return l.hist.counts.map((c, k) => c ? <rect key={k} x={X(l.hist!.start + k * l.hist!.step)} y={y + 9 - c / mx * 9} width={Math.max(1, X(l.hist!.start + (k + 1) * l.hist!.step) - X(l.hist!.start + k * l.hist!.step) - 0.5)} height={c / mx * 9} fill={l.color} opacity="0.85"><title>{`${l.label} · ${fmtTime(l.hist!.start + k * l.hist!.step, p.tz)} · ${c} 条`}</title></rect> : null); })()}
+        {l.hist && (() => { const mx = Math.max(...l.hist.counts, 1); return l.hist.counts.map((c, k) => c ? <rect key={k} x={X(l.hist!.start + k * l.hist!.step)} y={y + 9 - c / mx * 9} width={Math.max(1, X(l.hist!.start + (k + 1) * l.hist!.step) - X(l.hist!.start + k * l.hist!.step) - 0.5)} height={c / mx * 9} fill={l.color} opacity="0.85"><title>{i18nText("{0} · {1} · {2} 条", l.label, fmtTime(l.hist!.start + k * l.hist!.step, p.tz), c)}</title></rect> : null); })()}
         <text x={PX + 4} y={y + 6} className="tl-lane">{l.label}</text></g>; })}
-      {p.frames.map((f, i) => <circle key={f} cx={X(f)} cy={p.compact ? 20 : 15} r={f === p.frameShown ? 4 : 2.6} className={"tl-frame" + (p.cached[i] ? " ready" : "") + (f === p.frameShown ? " on" : "")}><title>{"模式时刻 " + fmtTime(f, p.tz)}</title></circle>)}
+      {p.frames.map((f, i) => <circle key={f} cx={X(f)} cy={p.compact ? 20 : 15} r={f === p.frameShown ? 4 : 2.6} className={"tl-frame" + (p.cached[i] ? " ready" : "") + (f === p.frameShown ? " on" : "")}><title>{i18nText("模式时刻 ") + fmtTime(f, p.tz)}</title></circle>)}
       <line x1={X(p.cursor)} x2={X(p.cursor)} y1={4} y2={H - 4} className="tl-cursor" /><circle cx={X(p.cursor)} cy={4} r="4" className="tl-cursor-head" />
     </svg>
     <div className="tl-opts">
-      <select value={p.step} onChange={e => p.setStep(e.target.value === "model" ? "model" : Number(e.target.value))} aria-label="步长" title="播放步长">
-        <option value="model" disabled={!p.frames.length}>步长：模式时刻</option>{[1, 3, 6, 12, 24].map(h => <option key={h} value={h}>步长：{h} h</option>)}</select>
-      <select value={p.fps} onChange={e => p.setFps(Number(e.target.value))} aria-label="播放速度" title="播放速度">{[0.5, 1, 2, 4, 8].map(v => <option key={v} value={v}>{v} 帧/秒</option>)}</select>
-      {p.lanes.length > 0 && <select value={p.windowH} onChange={e => p.setWindowH(Number(e.target.value))} aria-label="观测时间窗" title="显示截至当前时刻多长时间内的观测">{[1, 3, 6, 12, 24, 72, 240, 24 * 365 * 5].map(h => <option key={h} value={h}>观测窗 {h >= 24 * 365 ? "全部" : h >= 24 ? h / 24 + " 天" : h + " h"}</option>)}</select>}
-      <label className="tl-check" title={p.canInterp ? "游标位于两个模式时刻之间时，按时间权重线性混合两帧（仅用于显示，点查询仍报告原始时刻）" : "需要游标两侧都有模式时刻"}><input type="checkbox" checked={p.interp} disabled={!p.canInterp} onChange={e => p.setInterp(e.target.checked)} />时间插值</label>
-      {p.depth && p.depth.values.length > 1 && p.setDepth && <select value={p.depthValue ?? ""} onChange={e => p.setDepth!(Number(e.target.value))} aria-label="深度">{p.depth.values.map(v => <option key={v} value={v}>深度 {fmtN(v, v < 10 ? 1 : 0)} {p.depth!.units || "m"}</option>)}</select>}
-      <button className="tz" onClick={() => p.setTz(p.tz === "utc" ? "local" : "utc")} title="切换显示时区（数据均以 UTC 存储）">{p.tz === "utc" ? "UTC" : offsetLabel()}</button>
+      <select value={p.step} onChange={e => p.setStep(e.target.value === "model" ? "model" : Number(e.target.value))} aria-label={i18nText("步长")} title={i18nText("播放步长")}>
+        <option value="model" disabled={!p.frames.length}>{i18nText("步长：模式时刻")}</option>{[1, 3, 6, 12, 24].map(h => <option key={h} value={h}>{i18nText("步长：")}{h} h</option>)}</select>
+      <select value={p.fps} onChange={e => p.setFps(Number(e.target.value))} aria-label={i18nText("播放速度")} title={i18nText("播放速度")}>{[0.5, 1, 2, 4, 8].map(v => <option key={v} value={v}>{v} {" " + i18nText("帧/秒")}</option>)}</select>
+      {p.lanes.length > 0 && <select value={p.windowH} onChange={e => p.setWindowH(Number(e.target.value))} aria-label={i18nText("观测时间窗")} title={i18nText("显示截至当前时刻多长时间内的观测")}>{[1, 3, 6, 12, 24, 72, 240, 24 * 365 * 5].map(h => <option key={h} value={h}>{i18nText("观测窗") + " "}{h >= 24 * 365 ? i18nText("全部") : h >= 24 ? h / 24 + i18nText(" 天") : h + " h"}</option>)}</select>}
+      <label className="tl-check" title={p.canInterp ? i18nText("游标位于两个模式时刻之间时，按时间权重线性混合两帧（仅用于显示，点查询仍报告原始时刻）") : i18nText("需要游标两侧都有模式时刻")}><input type="checkbox" checked={p.interp} disabled={!p.canInterp} onChange={e => p.setInterp(e.target.checked)} />{i18nText("时间插值")}</label>
+      {p.depth && p.depth.values.length > 1 && p.setDepth && <select value={p.depthValue ?? ""} onChange={e => p.setDepth!(Number(e.target.value))} aria-label={i18nText("深度")}>{p.depth.values.map(v => <option key={v} value={v}>{i18nText("深度") + " "}{fmtN(v, v < 10 ? 1 : 0)} {p.depth!.units || "m"}</option>)}</select>}
+      <button className="tz" onClick={() => p.setTz(p.tz === "utc" ? "local" : "utc")} title={i18nText("切换显示时区（数据均以 UTC 存储）")}>{p.tz === "utc" ? "UTC" : offsetLabel()}</button>
     </div>
   </div>;
 }

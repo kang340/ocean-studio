@@ -1,3 +1,4 @@
+import { t as i18nText } from "../../i18n";
 // Vertical section panel: distance × depth on the file's real levels (cells, no smoothing between levels).
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Panel, Loading, Alert } from "./Inspectors";
@@ -40,23 +41,23 @@ export function SectionInspector({ data, onClose }: { data: { loading?: boolean;
     if (x < 0 || x > pw || y < 0 || y > ph) { setHover(""); return; }
     const d = x / pw * D, i = dist.reduce((b, t, k) => (Math.abs(t - d) < Math.abs(dist[b] - d) ? k : b), 0), fy = y / ph;
     const k = edges.findIndex((_, j) => j < edges.length - 1 && ys(edges[j]) <= fy && fy < ys(edges[j + 1])); if (k < 0) return;
-    const val = vals[k]?.[i]; setHover(`${fmtN(dist[i], 0)} km · ${fmtN(v.depth[k], v.depth[k] < 10 ? 1 : 0)} m · ${Number.isFinite(val) ? fmtN(val, spec?.decimals ?? 2) + " " + unit : "无数据（陆地 / 海底 / 网格外）"}`);
+    const val = vals[k]?.[i]; setHover(`${fmtN(dist[i], 0)} km · ${fmtN(v.depth[k], v.depth[k] < 10 ? 1 : 0)} m · ${Number.isFinite(val) ? fmtN(val, spec?.decimals ?? 2) + " " + unit : i18nText("无数据（陆地 / 海底 / 网格外）")}`);
   };
-  return <Panel title="垂向断面" sub={v ? `${v.label || v.name} · ${data.points.length} 个折点 · 全长 ${fmtN(D, 0)} km` : "沿折线采样真实模式层"} onClose={onClose}>
-    <div className="os-stack">{data.loading && <Loading text="沿断面读取各层…" />}{data.error && <Alert>{data.error}</Alert>}
+  return <Panel title={i18nText("垂向断面")} sub={v ? i18nText("{0} · {1} 个折点 · 全长 {2} km", v.label || v.name, data.points.length, fmtN(D, 0)) : i18nText("沿折线采样真实模式层")} onClose={onClose}>
+    <div className="os-stack">{data.loading && <Loading text={i18nText("沿断面读取各层…")} />}{data.error && <Alert>{data.error}</Alert>}
       {v && <>
-        <div className="os-seg"><button className={!log ? "on" : ""} onClick={() => setLog(false)}>线性深度</button><button className={log ? "on" : ""} onClick={() => setLog(true)}>对数深度</button></div>
-        <canvas ref={cv} style={{ width: W, height: H }} onMouseMove={move} onMouseLeave={() => setHover("")} aria-label="垂向断面图（横轴距离 km，纵轴深度 m 向下）" />
-        <small className="os-note">{hover || "横轴：沿线距离（km）；纵轴：深度（m，向下）。色块 = 文件真实层（层厚取相邻层中点），空白为陆地 / 海底以下 / 网格外。"}</small>
+        <div className="os-seg"><button className={!log ? "on" : ""} onClick={() => setLog(false)}>{i18nText("线性深度")}</button><button className={log ? "on" : ""} onClick={() => setLog(true)}>{i18nText("对数深度")}</button></div>
+        <canvas ref={cv} style={{ width: W, height: H }} onMouseMove={move} onMouseLeave={() => setHover("")} aria-label={i18nText("垂向断面图（横轴距离 km，纵轴深度 m 向下）")} />
+        <small className="os-note">{hover || i18nText("横轴：沿线距离（km）；纵轴：深度（m，向下）。色块 = 文件真实层（层厚取相邻层中点），空白为陆地 / 海底以下 / 网格外。")}</small>
         <div className="lg-bar" style={{ background: gradientCss(spec?.palette || "viridis"), height: 8, borderRadius: 4 }} />
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11 }}><span>{fmtN(range[0], 2)}</span><span>{unit}</span><span>{fmtN(range[1], 2)}</span></div>
         <dl className="os-kv compact">
-          <div><dt>{v.kind === "salinity" ? "盐跃层（中位）" : "温跃层（中位）"}</dt><dd>{v.cline.median_depth != null ? `${fmtN(v.cline.median_depth, 0)} m（虚线）` : "层数不足，未识别"}</dd></div>
-          <div><dt>模式层</dt><dd>{v.depth.length} 层 · {fmtN(Math.abs(v.depth[0]), 1)}–{fmtN(Math.abs(v.depth[v.depth.length - 1]), 0)} {v.depth_units}</dd></div>
-          <div><dt>时间</dt><dd>{v.time || "—"}{data.daily ? "（日均产品：代表当日平均）" : ""}</dd></div>
-          <div><dt>数据</dt><dd>{data.source || ""}</dd></div>
+          <div><dt>{v.kind === "salinity" ? i18nText("盐跃层（中位）") : i18nText("温跃层（中位）")}</dt><dd>{v.cline.median_depth != null ? i18nText("{0} m（虚线）", fmtN(v.cline.median_depth, 0)) : i18nText("层数不足，未识别")}</dd></div>
+          <div><dt>{i18nText("模式层")}</dt><dd>{v.depth.length} {" " + i18nText("层 ·") + " "}{fmtN(Math.abs(v.depth[0]), 1)}–{fmtN(Math.abs(v.depth[v.depth.length - 1]), 0)} {v.depth_units}</dd></div>
+          <div><dt>{i18nText("时间")}</dt><dd>{v.time || "—"}{data.daily ? i18nText("（日均产品：代表当日平均）") : ""}</dd></div>
+          <div><dt>{i18nText("数据")}</dt><dd>{data.source || ""}</dd></div>
         </dl>
-        <small className="os-note">跃层：{v.cline.method}。插值：每层双线性，邻点缺测时取最近有效格点；层间不插值、不外推。{data.r!.outside ? ` ${data.r!.outside} 个采样点在网格外。` : ""}</small>
+        <small className="os-note">{i18nText("跃层：")}{v.cline.method}{i18nText("。插值：每层双线性，邻点缺测时取最近有效格点；层间不插值、不外推。")}{data.r!.outside ? i18nText(" {0} 个采样点在网格外。", data.r!.outside) : ""}</small>
       </>}
     </div></Panel>;
 }

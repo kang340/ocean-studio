@@ -1,6 +1,8 @@
+import { t as i18nText } from "../i18n";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Globe2, Map as MapIcon, Sun, Moon, Maximize2, Presentation, BoxSelect, Crosshair, Spline, Info, Layers as LayersIcon, PanelLeftClose, PanelLeftOpen, Satellite, Grid3x3 } from "lucide-react";
+import { Globe2, Map as MapIcon, Sun, Moon, Maximize2, Presentation, BoxSelect, Crosshair, Spline, Info, Layers as LayersIcon, PanelLeftClose, PanelLeftOpen, Satellite, Grid3x3, Github, Languages } from "lucide-react";
+import { language, switchLanguage } from "../i18n";
 import "../theme.css"; import "./studio.css"; import "./elements.css";
 import { useTheme } from "../shell";
 import * as A from "./api";
@@ -207,7 +209,7 @@ function StudioApp() {
   useEffect(() => {
     if (!bFile) { setBDs(null); setBFrames(null); return; } let stale = false; const id = bFile.ds.id;
     A.getDataset(id).then(d => { if (stale) return; setBDs(d); const opt = d.describe ? M.scalarOptions(d.describe).find(o => o.id === bFile.scalar) : null;
-      return A.getFrames(id, opt?.vars[0]).then(fs => !stale && setBFrames({ id, fs })); }).catch(e => !stale && setError("对比数据源：" + e.message));
+      return A.getFrames(id, opt?.vars[0]).then(fs => !stale && setBFrames({ id, fs })); }).catch(e => !stale && setError(i18nText("对比数据源：") + e.message));
     return () => { stale = true; };
   }, [bFile?.ds.id, bFile?.scalar]);
   const bReady = !!(bFile && bDs && bDs.id === bFile.ds.id && bFrames?.id === bFile.ds.id);
@@ -229,9 +231,9 @@ function StudioApp() {
     overlap: !!(desc?.grid && bDs?.describe?.grid && boxesOverlap(desc.grid.bounds, bDs.describe.grid.bounds)) }) : [];
   const cmpNotes = useMemo(() => { const n: string[] = []; if (!cmpActive || !model || !bDs) return n;
     const daily = (d: A.VizDataset) => /P1D|daily|_day/i.test(d.dataset);
-    if (daily(model) !== daily(bDs)) n.push(`${daily(model) ? "A" : "B"} 为日均产品（时间戳代表当日平均），另一方为瞬时场，差值包含时间代表性差异。`);
-    const ga = desc?.grid, gb = bDs.describe?.grid; if (ga && gb && Math.abs(ga.dx - gb.dx) / Math.max(ga.dx, gb.dx) > 0.2) n.push(`两者分辨率不同（${+ga.dx.toFixed(3)}° / ${+gb.dx.toFixed(3)}°）：差值在较粗网格上计算，较细一方先双线性插值到粗网格。`);
-    if (element?.id === "sea_temperature") n.push("模式海温通常为最上层（约 0.5 m）体温度，不同模式的最上层深度略有差异。");
+    if (daily(model) !== daily(bDs)) n.push(i18nText("{0} 为日均产品（时间戳代表当日平均），另一方为瞬时场，差值包含时间代表性差异。", daily(model) ? "A" : "B"));
+    const ga = desc?.grid, gb = bDs.describe?.grid; if (ga && gb && Math.abs(ga.dx - gb.dx) / Math.max(ga.dx, gb.dx) > 0.2) n.push(i18nText("两者分辨率不同（{0}° / {1}°）：差值在较粗网格上计算，较细一方先双线性插值到粗网格。", +ga.dx.toFixed(3), +gb.dx.toFixed(3)));
+    if (element?.id === "sea_temperature") n.push(i18nText("模式海温通常为最上层（约 0.5 m）体温度，不同模式的最上层深度略有差异。"));
     return n; }, [cmpActive, model?.id, bDs?.id, element?.id]);
   const Fb = useRef<{ s: A.Field | null; sd: A.Field | null }>({ s: null, sd: null }), [bVersion, setBVersion] = useState(0), [bBusy, setBBusy] = useState(false), bReq = useRef(0);
   useEffect(() => {
@@ -241,7 +243,7 @@ function StudioApp() {
     setBBusy(true);
     (async () => { const s = await q(); const sd = box && s.factor > 1 && !playing ? await q({ box, cells: DETAIL_CELLS }).catch(() => null) : null;
       if (req !== bReq.current) return; Fb.current = { s, sd }; setBVersion(v => v + 1); })()
-      .catch(e => req === bReq.current && setError("对比数据源：" + e.message)).finally(() => req === bReq.current && setBBusy(false));
+      .catch(e => req === bReq.current && setError(i18nText("对比数据源：") + e.message)).finally(() => req === bReq.current && setBBusy(false));
   }, [cmpActive, bScalar?.id, bMatch?.frame.task, bMatch?.frame.time, bMatch?.depth, mapReady, viewTick, playing, cmpBlockers.join()]);
 
   // ---------------------------------------------------------------- map lifecycle
@@ -249,7 +251,7 @@ function StudioApp() {
     if (!mapEl.current) return;
     let m: StudioMap;
     try { m = new StudioMap(mapEl.current, theme, { globe, center: Q.get("lon") ? [Number(Q.get("lon")), Number(Q.get("lat"))] : undefined, zoom: Q.get("zoom") ? Number(Q.get("zoom")) : undefined }); }
-    catch { setError("当前浏览器无法创建 WebGL2 地图（需要启用硬件加速）"); return; }
+    catch { setError(i18nText("当前浏览器无法创建 WebGL2 地图（需要启用硬件加速）")); return; }
     sm.current = m;
     m.ready.then(() => {
       const f = new FieldLayer("os-field"); m.map.addLayer(f, m.anchor("ocean-field")); fieldL.current = f;
@@ -297,7 +299,7 @@ function StudioApp() {
         const [a2, b2] = await Promise.all([sVars ? at(f2, sVars) : null, vVars && !vId ? (same ? (sVars ? at(f2, sVars) : null) : at(f2, vVars)) : null]);
         out.s2 = a2; out.v2 = b2; out.w = pair.i1 === nearIdx ? 1 - pair.w : pair.w; }
       if (waves && waveVec) out.wave = await at(frame, M.vectorVars(waveVec), { depth: null }).catch(() => null);
-      const [sd, v] = await Promise.all([sdP?.catch(() => null), vP?.catch(e => { setError("矢量图层：" + e.message); return null; })]);
+      const [sd, v] = await Promise.all([sdP?.catch(() => null), vP?.catch(e => { setError(i18nText("矢量图层：") + e.message); return null; })]);
       if (req !== reqRef.current) return;
       out.sd = sd; out.v = v; F.current = out;
       if (out.s && scalar) {
@@ -366,7 +368,7 @@ function StudioApp() {
       wl.setStyle({ color: show ? "white" : theme === "light" ? "dark" : "white", lut: lut("waves"), range: [0, 6] }); wl.setEnabled(true); }
     else if (wl) wl.setEnabled(false);
     } catch (e: any) { // a drawing failure must not take the whole studio (and its WebGL context) down
-      console.error("Ocean Studio render", e); setError("图层绘制失败：" + (e?.message || String(e)));
+      console.error("Ocean Studio render", e); setError(i18nText("图层绘制失败：") + (e?.message || String(e)));
       try { fl.clear(); pl.setEnabled(false); pl.setField(null); arrows.current?.setField(null); waveL.current?.setEnabled(false); } catch { /* already torn down */ }
     }
   }, [fieldsVersion, mapReady, range, table, fieldUi, flowUi, scalarId, vectorId, modelId, theme, ocean, waves, showModel, useInterp]);
@@ -419,7 +421,7 @@ function StudioApp() {
   }, [cmpOk, cmp.view, bVersion, bScalar?.id, bDs?.id, vector?.id, vectorId, flowUi, mapReady]);
   const cmpStatus: CmpStatus | null = cmpActive && bSource ? { aLabel: elSource?.label || "", bLabel: bSource.label, aTime: frame?.time || null, bTime: bMatch?.frame.time || null, dtH: bMatch?.dtH ?? null,
     aDepth: depthAxis ? depth : null, bDepth: bMatch?.depth ?? null, unit: unitA, unitB, blockers: cmpBlockers, notes: cmpNotes, stats: cmpStats,
-    grid: cmpGrid ? `差值网格 ${cmpGrid.grid.nx}×${cmpGrid.grid.ny}（${cmpGrid.target === "A" ? elSource?.label : bSource.label} 网格，${+Math.abs(cmpGrid.grid.dx).toFixed(3)}°）` : "", loading: bBusy || (!bReady && !!bFile) } : null;
+    grid: cmpGrid ? i18nText("差值网格 {0}×{1}（{2} 网格，{3}°）", cmpGrid.grid.nx, cmpGrid.grid.ny, cmpGrid.target === "A" ? elSource?.label : bSource.label, +Math.abs(cmpGrid.grid.dx).toFixed(3)) : "", loading: bBusy || (!bReady && !!bFile) } : null;
   // ---------------------------------------------------------------- observations on the map
   const obsReq = useRef(0), [obsCounts, setObsCounts] = useState<Record<string, number>>({});
   useEffect(() => {
@@ -522,9 +524,9 @@ function StudioApp() {
           }
         }
         const md = await A.getDataset(mid), opt = md.describe ? M.scalarOptions(md.describe).find(o => o.kind === kind && M.depthsFor(md.describe!, o.axis)) : null;
-        if (!opt) throw new Error(`${md.dataset} 没有带深度层的${k === "T" ? "温度" : "盐度"}变量`);
+        if (!opt) throw new Error(i18nText("{0} 没有带深度层的{1}变量", md.dataset, k === "T" ? i18nText("温度") : i18nText("盐度")));
         const fs = await A.getFrames(mid, opt.vars[0]), unit = canonUnit(kind, opt.spec.unit || opt.units), ou = canonUnit(kind, obsUnit || unit);
-        if (unit !== ou) throw new Error(`单位不一致：模式 ${unit} / 观测 ${ou}，无法比较`);
+        if (unit !== ou) throw new Error(i18nText("单位不一致：模式 {0} / 观测 {1}，无法比较", unit, ou));
         const column = async (p: ObsProfile, fr: { time: string; task: string }): Promise<ModelColumn> => {
           const r: any = await A.pointQuery(fr.task, p.lon, p.lat, { time: fr.time, profile: true, vars: opt.vars }); if (!r.inside) return null;
           const pr = r.profiles?.find((x: any) => x.name === opt.vars[0]); if (!pr) return null; const conv = opt.spec.convert;
@@ -561,8 +563,8 @@ function StudioApp() {
       r.values = (r.values || []).map((v: any) => { const sp = specFor(v.kind, v.units); return { ...v, display: v.value == null ? null : sp.convert ? sp.convert(v.value) : v.value, unit: sp.unit || v.units, label: sp.label || v.label, decimals: sp.decimals }; });
       const get = (n?: string | null) => r.values.find((x: any) => x.name === n)?.value;
       r.derived = (desc?.vectors || []).flatMap((vec: any) => { if (vec.u) { const u = get(vec.u), v = get(vec.v); if (u == null || v == null) return [];
-        const to = bearing(u, v), wind = vec.kind === "wind", d = wind ? (to + 180) % 360 : to; return [{ label: vec.label + "速度", value: `${fmtN(Math.hypot(u, v), vec.kind === "current" ? 3 : 2)} m/s`, sub: `${wind ? "来自" : "去向"} ${fmtN(d, 0)}°（${compass(d)}）` }]; }
-        if (vec.direction) { const d = get(vec.direction); return d == null ? [] : [{ label: "浪向", value: `来自 ${fmtN(d, 0)}°（${compass(d)}）`, sub: `传播去向 ${fmtN((d + 180) % 360, 0)}°` }]; } return []; });
+        const to = bearing(u, v), wind = vec.kind === "wind", d = wind ? (to + 180) % 360 : to; return [{ label: vec.label + i18nText("速度"), value: `${fmtN(Math.hypot(u, v), vec.kind === "current" ? 3 : 2)} m/s`, sub: `${wind ? i18nText("来自") : i18nText("去向")} ${fmtN(d, 0)}°（${compass(d)}）` }]; }
+        if (vec.direction) { const d = get(vec.direction); return d == null ? [] : [{ label: i18nText("浪向"), value: i18nText("来自 {0}°（{1}）", fmtN(d, 0), compass(d)), sub: i18nText("传播去向 {0}°", fmtN((d + 180) % 360, 0)) }]; } return []; });
       let series: any = null;
       if (scalar) {
         if (own && r.series?.length) { const ss = scalar.vars.map(n => r.series.find((s: any) => s.name === n)); if (ss.every(Boolean)) series = [{ label: scalar.label, unit: scalar.spec.unit || scalar.units, t: ss[0].times.map(A.tms), v: ss[0].times.map((_: any, i: number) => { const x = ss.map((s: any) => s.values[i]); return x.some((y: any) => y == null) ? null : scalar.derived ? Math.hypot(x[0], x[1]) : scalar.spec.convert ? scalar.spec.convert(x[0]) : x[0]; }) }]; }
@@ -595,7 +597,7 @@ function StudioApp() {
       const profiles = layered ? [prof(ra, scalar, `A · ${base.aLabel}`, CMP_A, false), prof(rb, bScalar, `B · ${base.bLabel}`, CMP_B, true)].filter(Boolean) : null;
       setInsp({ kind: "compare", data: { ...base, a: { value: pickVal(ra, scalar), time: frame.time, depth: zA }, b: { value: pickVal(rb, bScalar), time: bMatch.frame.time, depth: bMatch.depth },
         series: sa.v.some(v => v != null) || sb.v.some(v => v != null) ? [sa, sb] : null, profiles: profiles && profiles.length ? profiles : null,
-        method: `取值：两数据源各自网格上双线性插值（邻点缺测时取最近有效格点）；B 取与 A 最接近的时次${bMatch.depth != null ? "与深度层" : ""}，不做时间插值。时间序列使用各自原生时次。` } });
+        method: i18nText("取值：两数据源各自网格上双线性插值（邻点缺测时取最近有效格点）；B 取与 A 最接近的时次{0}，不做时间插值。时间序列使用各自原生时次。", bMatch.depth != null ? i18nText("与深度层") : "") } });
     } catch (e: any) { setInsp({ kind: "compare", data: { ...base, error: e.message } }); }
   };
   const drag = useRef<any>(null);
@@ -626,10 +628,10 @@ function StudioApp() {
           ` ${u} · Δ ${Number.isFinite(v) && Number.isFinite(w) ? fmtN(v - w, scalar.spec.decimals) : "—"}`)); }
       else parts.push(h("em", undefined, h("b", undefined, fmtN(v, scalar.spec.decimals)), ` ${u}`)); } }
     if (cmpOk && cmp.view === "side") sideApi.current?.cross(e.lngLat);
-    if (showModel && vector && vectorId !== "none" && f.v) { const p = pick(f.v); if (p) { const n = f.v.variables.map(x => x.name), u = p.s.at(n.indexOf(vector.u!), p.gx, p.gy), v = p.s.at(n.indexOf(vector.v!), p.gx, p.gy); if (u === u && v === v) { const to = bearing(u, v), d = flowKind === "wind" ? (to + 180) % 360 : to; parts.push(h("em", undefined, `${fmtN(Math.hypot(u, v), flowKind === "current" ? 2 : 1)} m/s · ${flowKind === "wind" ? "来自" : "去向"} ${fmtN(d, 0)}°`)); } } }
+    if (showModel && vector && vectorId !== "none" && f.v) { const p = pick(f.v); if (p) { const n = f.v.variables.map(x => x.name), u = p.s.at(n.indexOf(vector.u!), p.gx, p.gy), v = p.s.at(n.indexOf(vector.v!), p.gx, p.gy); if (u === u && v === v) { const to = bearing(u, v), d = flowKind === "wind" ? (to + 180) % 360 : to; parts.push(h("em", undefined, `${fmtN(Math.hypot(u, v), flowKind === "current" ? 2 : 1)} m/s · ${flowKind === "wind" ? i18nText("来自") : i18nText("去向")} ${fmtN(d, 0)}°`)); } } }
     const hit = m.queryRenderedFeatures(e.point, { layers: obsLayersHit() })[0];
     if (hit) { const pr: any = hit.properties; // feature properties come from observation files: text only
-      parts.push(h("em", "obs", pr.cluster ? `${pr.point_count} 个平台 · 点击展开` : hit.layer.id === "os-diff" && pr.kind === "prof" ? `${pr.id} · 剖面平均偏差 ${fmtN(pr.d, 3)} · RMSE ${fmtN(pr.rmse, 3)} · ${pr.n} 层` : hit.layer.id === "os-diff" ? `${pr.id} · 观测 ${fmtN(pr.o, 2)} · 模式 ${fmtN(pr.mo, 2)} · 差 ${fmtN(pr.d, 2)}` : `${(TYPE_STYLE[pr.type] || TYPE_STYLE.unknown).label} ${pr.id}${pr.value != null && pr.value !== "null" ? " · " + fmtN(+pr.value, 2) : ""} · ${String(pr.time).slice(5, 16).replace("T", " ")}`)); }
+      parts.push(h("em", "obs", pr.cluster ? i18nText("{0} 个平台 · 点击展开", pr.point_count) : hit.layer.id === "os-diff" && pr.kind === "prof" ? i18nText("{0} · 剖面平均偏差 {1} · RMSE {2} · {3} 层", pr.id, fmtN(pr.d, 3), fmtN(pr.rmse, 3), pr.n) : hit.layer.id === "os-diff" ? i18nText("{0} · 观测 {1} · 模式 {2} · 差 {3}", pr.id, fmtN(pr.o, 2), fmtN(pr.mo, 2), fmtN(pr.d, 2)) : `${(TYPE_STYLE[pr.type] || TYPE_STYLE.unknown).label} ${pr.id}${pr.value != null && pr.value !== "null" ? " · " + fmtN(+pr.value, 2) : ""} · ${String(pr.time).slice(5, 16).replace("T", " ")}`)); }
     m.getCanvas().style.cursor = hit ? "pointer" : tool === "region" ? "crosshair" : "";
     renderHover(el, parts); el.style.opacity = "1";
   };
@@ -638,11 +640,11 @@ function StudioApp() {
     const pts = secPts; setTool("inspect"); if (pts.length < 2) return;
     const daily = !!model && /P1D|daily|_day/i.test(model.dataset), source = model ? `${model.provider_label || model.provider} · ${model.dataset}` : "";
     if (!model || !frame || !scalar || scalarId === "none" || scalar.derived || !depthAxis || depthAxis.values.length < 2) {
-      setInsp({ kind: "section", data: { points: pts, error: "当前颜色场没有多个真实深度层（或为派生速度），无法生成垂向断面。请选择带深度层的温度 / 盐度等变量。" } }); return; }
+      setInsp({ kind: "section", data: { points: pts, error: i18nText("当前颜色场没有多个真实深度层（或为派生速度），无法生成垂向断面。请选择带深度层的温度 / 盐度等变量。") } }); return; }
     setInsp({ kind: "section", data: { points: pts, loading: true } });
     try { const r = await sectionQuery(frame.task, scalar.vars, pts, frame.time); setInsp({ kind: "section", data: { points: pts, r, source, daily } }); }
     catch (e: any) { const m = e?.message || String(e);
-      setInsp({ kind: "section", data: { points: pts, source, error: /not found|404/i.test(m) ? "服务端未提供断面接口（/section）。" : m } }); }
+      setInsp({ kind: "section", data: { points: pts, source, error: /not found|404/i.test(m) ? i18nText("服务端未提供断面接口（/section）。") : m } }); }
   };
   useEffect(() => { const m = sm.current?.map; if (!mapReady || !m) return;
     const line = insp?.kind === "section" ? insp.data.points : secPts;
@@ -676,7 +678,7 @@ function StudioApp() {
   }, [step, frameTimes, nearIdx, domain, showModel]);
   useEffect(() => { if (!playing || loading) return; const t = window.setTimeout(() => step1(1), 1000 / fps); return () => clearTimeout(t); }, [playing, loading, fps, cursor, fieldsVersion, step1]);
   useEffect(() => {
-    const p = new URLSearchParams(); p.set("mode", mode); if (modelId) p.set("model", modelId); if (scalarId) p.set("var", scalarId); if (vectorId) p.set("vec", vectorId);
+    const p = new URLSearchParams(); p.set("lang", language); p.set("mode", mode); if (modelId) p.set("model", modelId); if (scalarId) p.set("var", scalarId); if (vectorId) p.set("vec", vectorId);
     if (obsSel.length) p.set("obs", obsSel.join(",")); if (Number.isFinite(cursor)) p.set("t", A.isoOf(cursor)); if (globe) p.set("view", "globe"); if (depth != null && depthAxis) p.set("z", String(depth));
     if (mode === "model" && browse === "element" && elementId) { p.set("el", elementId); if (srcProvider) p.set("src", srcProvider); if (cmp.on && cmp.provider) { p.set("cmp", cmp.provider); p.set("cv", cmp.view); } }
     else if (mode === "model" && browse === "file") p.set("browse", "file");
@@ -706,37 +708,42 @@ function StudioApp() {
   const obsVarOf = (id: string) => features[id]?.variable || null;
   return <div className={"os-app" + (present ? " present" : "")} data-mode={mode}>
     <header className="os-top">
-      <a className="os-brand" href="/ocean-studio.html" title="Ocean Studio"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden><defs><linearGradient id="osg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stopColor="#5fd0f0" /><stop offset="1" stopColor="#1b6fb0" /></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#osg)" strokeWidth="2.2" /><path d="M5 18c4-3 7 3 11 0s7 3 11 0" fill="none" stroke="#5fd0f0" strokeWidth="2.2" strokeLinecap="round" /><path d="M7 12.5c3-2 6 2 9 0s6 2 9 0" fill="none" stroke="#5fd0f0" strokeOpacity=".5" strokeWidth="1.6" strokeLinecap="round" /></svg><b>Ocean Studio</b></a>
-      <nav className="os-modes" role="tablist" aria-label="工作模式">{([["model", "数值模式"], ["obs", "观测数据"], ["fusion", "融合分析"]] as [Mode, string][]).map(([k, l]) => <button key={k} role="tab" aria-selected={mode === k} className={mode === k ? "on" : ""} onClick={() => switchMode(k)}>{l}</button>)}</nav>
+      <a className="os-brand" href={"/ocean-studio.html?lang=" + language} title="Ocean Studio"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden><defs><linearGradient id="osg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stopColor="#5fd0f0" /><stop offset="1" stopColor="#1b6fb0" /></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#osg)" strokeWidth="2.2" /><path d="M5 18c4-3 7 3 11 0s7 3 11 0" fill="none" stroke="#5fd0f0" strokeWidth="2.2" strokeLinecap="round" /><path d="M7 12.5c3-2 6 2 9 0s6 2 9 0" fill="none" stroke="#5fd0f0" strokeOpacity=".5" strokeWidth="1.6" strokeLinecap="round" /></svg><b>Ocean Studio</b></a>
+      <nav className="os-modes" role="tablist" aria-label={i18nText("工作模式")}>{([["model", i18nText("数值模式")], ["obs", i18nText("观测数据")], ["fusion", i18nText("融合分析")]] as [Mode, string][]).map(([k, l]) => <button key={k} role="tab" aria-selected={mode === k} className={mode === k ? "on" : ""} onClick={() => switchMode(k)}>{l}</button>)}</nav>
       <div className="os-context">
         {mode !== "obs" && model && <span className="chip" title={model.path}><i className="src" />{model.provider_label}<em>{model.dataset}</em></span>}
         {mode !== "obs" && scalar && scalarId !== "none" && <span className="chip">{scalar.label}<em>{unit}</em></span>}
-        {mode !== "model" && obsLoaded.map(id => summaries[id] && <span key={id} className="chip obs">{summaries[id].dataset}<em>{(obsCounts[id] ?? 0).toLocaleString()} 点</em></span>)}
-        {depthAxis && depth != null && <span className="chip">深度<em>{fmtN(depth, depth < 10 ? 1 : 0)} m</em></span>}
+        {mode !== "model" && obsLoaded.map(id => summaries[id] && <span key={id} className="chip obs">{summaries[id].dataset}<em>{(obsCounts[id] ?? 0).toLocaleString()} {" " + i18nText("点")}</em></span>)}
+        {depthAxis && depth != null && <span className="chip">{i18nText("深度")}<em>{fmtN(depth, depth < 10 ? 1 : 0)} m</em></span>}
       </div>
       <div className="os-actions">
-        <div className="os-seg2"><button className={!globe ? "on" : ""} onClick={() => setGlobe(false)} title="二维地图 (G)"><MapIcon size={14} />2D</button><button className={globe ? "on" : ""} onClick={() => setGlobe(true)} title="三维地球 (G)"><Globe2 size={14} />3D</button></div>
-        <button className={"icon" + (basemap === "satellite" ? " on" : "")} title={basemap === "satellite" ? "切换为矢量底图" : "卫星影像底图（在线 · NASA GIBS Blue Marble）"} onClick={() => setBasemap(b => (b === "vector" ? "satellite" : "vector"))}><Satellite size={15} /></button>
-        <button className={"icon" + (tool === "section" ? " on" : "")} title="垂向断面：在地图上点选折线" aria-label="垂向断面" onClick={() => { setTool(t => (t === "section" ? "inspect" : "section")); setSecPts([]); }}><Spline size={15} /></button>
-        <button className={"icon" + (tool === "region" ? " on" : "")} title="框选区域分析" onClick={() => { setTool(t => (t === "region" ? "inspect" : "region")); setBox(null); }}><BoxSelect size={15} /></button>
-        <button className="icon" title={theme === "dark" ? "浅色主题" : "深色主题"} onClick={toggleTheme}>{theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}</button>
-        <button className="icon" title="演示模式 (P)" onClick={() => setPresent(true)}><Presentation size={15} /></button>
-        <button className="icon" title="全屏 (F)" onClick={toggleFull}><Maximize2 size={15} /></button>
+        <div className="os-language" role="group" aria-label={i18nText("Language / 语言")}><Languages size={13} aria-hidden="true" />
+          <button lang="zh-CN" aria-pressed={language === "zh"} onClick={() => switchLanguage("zh")}>{i18nText("中文")}</button>
+          <button lang="en" aria-pressed={language === "en"} onClick={() => switchLanguage("en")}>EN</button>
+        </div>
+        <a className="os-account" href="https://github.com/kang340" target="_blank" rel="noopener noreferrer" title="GitHub · @kang340" aria-label="GitHub · @kang340"><Github size={15} aria-hidden="true" /><span>@kang340</span></a>
+        <div className="os-seg2"><button className={!globe ? "on" : ""} onClick={() => setGlobe(false)} title={i18nText("二维地图 (G)")}><MapIcon size={14} />2D</button><button className={globe ? "on" : ""} onClick={() => setGlobe(true)} title={i18nText("三维地球 (G)")}><Globe2 size={14} />3D</button></div>
+        <button className={"icon" + (basemap === "satellite" ? " on" : "")} title={basemap === "satellite" ? i18nText("切换为矢量底图") : i18nText("卫星影像底图（在线 · NASA GIBS Blue Marble）")} onClick={() => setBasemap(b => (b === "vector" ? "satellite" : "vector"))}><Satellite size={15} /></button>
+        <button className={"icon" + (tool === "section" ? " on" : "")} title={i18nText("垂向断面：在地图上点选折线")} aria-label={i18nText("垂向断面")} onClick={() => { setTool(t => (t === "section" ? "inspect" : "section")); setSecPts([]); }}><Spline size={15} /></button>
+        <button className={"icon" + (tool === "region" ? " on" : "")} title={i18nText("框选区域分析")} onClick={() => { setTool(t => (t === "region" ? "inspect" : "region")); setBox(null); }}><BoxSelect size={15} /></button>
+        <button className="icon" title={theme === "dark" ? i18nText("浅色主题") : i18nText("深色主题")} onClick={toggleTheme}>{theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}</button>
+        <button className="icon" title={i18nText("演示模式 (P)")} onClick={() => setPresent(true)}><Presentation size={15} /></button>
+        <button className="icon" title={i18nText("全屏 (F)")} onClick={toggleFull}><Maximize2 size={15} /></button>
         <span className="sep" />
-        <button className="lnk" onClick={() => setAbout(true)} title="项目说明、样例数据目录与数据来源 (?)"><Info size={14} />关于 · 数据</button>
+        <button className="lnk" onClick={() => setAbout(true)} title={i18nText("项目说明、样例数据目录与数据来源 (?)")}><Info size={14} />{i18nText("关于 · 数据")}</button>
       </div>
     </header>
     <div className="os-body">
-      <aside className={"os-dock" + (leftOpen ? "" : " closed")} aria-label="数据与图层">
-        {mode === "model" && <div className="os-browse" role="tablist" aria-label="浏览方式">
-          <button role="tab" aria-selected={browse === "element"} className={browse === "element" ? "on" : ""} onClick={() => { if (browse === "element") return; const e = elementOf(scalar?.kind); if (e) { elPick.current = `${e}|${model?.provider}|${pickTick}`; setElementId(e); setSrcProvider(model?.provider || null); } setBrowse("element"); }}>按要素</button>
-          <button role="tab" aria-selected={browse === "file"} className={browse === "file" ? "on" : ""} onClick={() => { setBrowse("file"); setCmp(c => ({ ...c, on: false })); }}>按数据文件</button></div>}
+      <aside className={"os-dock" + (leftOpen ? "" : " closed")} aria-label={i18nText("数据与图层")}>
+        {mode === "model" && <div className="os-browse" role="tablist" aria-label={i18nText("浏览方式")}>
+          <button role="tab" aria-selected={browse === "element"} className={browse === "element" ? "on" : ""} onClick={() => { if (browse === "element") return; const e = elementOf(scalar?.kind); if (e) { elPick.current = `${e}|${model?.provider}|${pickTick}`; setElementId(e); setSrcProvider(model?.provider || null); } setBrowse("element"); }}>{i18nText("按要素")}</button>
+          <button role="tab" aria-selected={browse === "file"} className={browse === "file" ? "on" : ""} onClick={() => { setBrowse("file"); setCmp(c => ({ ...c, on: false })); }}>{i18nText("按数据文件")}</button></div>}
         {byElement && element && <ElementPanel el={element} sources={elSources} provider={elSource?.provider || null} setProvider={pickSource} activeFile={model ? { name: model.dataset, path: model.path } : null} compare={cmp} setCompare={setCmp} status={cmpStatus} />}
-        {byElement && !element && <div className="os-alert info">选择地图上方的要素开始浏览。</div>}
+        {byElement && !element && <div className="os-alert info">{i18nText("选择地图上方的要素开始浏览。")}</div>}
         {mode === "model" && !elEmpty && <ModelPanel hideDatasets={byElement} datasets={datasets} modelId={modelId} setModelId={id => { setModelId(id); fitted.current = ""; }} scalars={scalars} scalarId={scalarId} setScalarId={setScalarId} range={range} setRange={setRange}
           autoRange={() => { const f = freshF(), src = f.sd && f.s && f.sd.factor < f.s.factor ? f.sd : f.s, b = sm.current?.map.getBounds(); if (src && scalar) setRange(robustRange(displayArray(src, scalar.derived ? [0, 1] : 0, scalar.spec.convert, scalar.spec.unit), scalar.spec.symmetric, b ? { f: src, bbox: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] } : undefined)); }}
           field={fieldUi} setField={setFieldUi} vectors={vecDs?.describe?.vectors || []} vectorId={vectorId} setVectorId={setVectorId} flowSource={flowSource} setFlowSource={setFlowSource} flowSets={flowSets}
-          flow={flowUi} setFlow={setFlowUi} waveVec={waveVec} waves={waves} setWaves={setWaves} unit={unit} frameNote={frameSet ? `${frameSet.note}${frameSet.excluded.length ? `；${frameSet.excluded.length} 个同类文件未纳入（时间缺口或预报时效不同）` : ""}` : ""} />}
+          flow={flowUi} setFlow={setFlowUi} waveVec={waveVec} waves={waves} setWaves={setWaves} unit={unit} frameNote={frameSet ? `${frameSet.note}${frameSet.excluded.length ? i18nText("；{0} 个同类文件未纳入（时间缺口或预报时效不同）", frameSet.excluded.length) : ""}` : ""} />}
         {mode === "obs" && <ObsPanel datasets={datasets} selected={obsSel} toggle={id => { const adding = !obsSel.includes(id); setObsSel(s => (s.includes(id) ? s.filter(x => x !== id) : [...s, id])); if (adding) focusObs.current = id; }} summaries={summaries} ui={obsUi} setUi={setObsUi} counts={obsCounts} canUnify={!!scalar && scalarId !== "none"} />}
         {mode === "fusion" && <FusionPanel datasets={datasets} ui={fusion} setUi={u => { setFusion(u); if (u.obs && u.obs !== fusion.obs && !summaries[u.obs]) A.obsSummary(u.obs).then(s => setSummaries(m => ({ ...m, [u.obs!]: s }))); }} suggestions={suggestions} summaries={summaries} run={runFusion} busy={matchBusy} result={match} openResult={() => setInsp({ kind: "match" })}
           prof={prof} setProf={setProf} runProfiles={runProfiles} profBusy={profBusy} profResult={profRun?.T || profRun?.S ? { n: (profRun.T || profRun.S)!.stats.n, rmse: (profRun.T || profRun.S)!.stats.rmse, unit: (profRun.T || profRun.S)!.unit } : null} openProfiles={() => setInsp({ kind: "profiles" })} />}
@@ -750,30 +757,30 @@ function StudioApp() {
         {sideOn && <div className="os-sidelabel a"><i className="ab">A</i>{elSource?.label}</div>}
         {byElement && !present && <div className="os-elwrap"><ElementBar counts={elCounts} active={elementId} onPick={id => { setElementId(id); setInsp(i => (i?.kind === "compare" ? null : i)); }} />
           {element && <SourceSwitcher el={element} sources={elSources} provider={elSource?.provider || null} setProvider={pickSource} compare={cmp} setCompare={setCmp} />}
-          {cmpActive && cmpBlockers.length > 0 && <div className="os-cmpwarn"><b>无法对比：</b>{cmpBlockers[0]}
-            {commonTime != null && bMatch?.dtH != null && bMatch.dtH > cmp.maxDt ? <button className="os-cmpjump" onClick={jumpCommon}>跳到共同时次 {fmtTime(commonTime, "utc", false)}</button>
-              : bMatch?.dtH != null && bMatch.dtH > cmp.maxDt ? <span className="os-cmpnone">两数据源本地文件没有 ±{cmp.maxDt} h 内的共同时次</span> : null}</div>}</div>}
+          {cmpActive && cmpBlockers.length > 0 && <div className="os-cmpwarn"><b>{i18nText("无法对比：")}</b>{cmpBlockers[0]}
+            {commonTime != null && bMatch?.dtH != null && bMatch.dtH > cmp.maxDt ? <button className="os-cmpjump" onClick={jumpCommon}>{i18nText("跳到共同时次") + " "}{fmtTime(commonTime, "utc", false)}</button>
+              : bMatch?.dtH != null && bMatch.dtH > cmp.maxDt ? <span className="os-cmpnone">{i18nText("两数据源本地文件没有 ±")}{cmp.maxDt} {" " + i18nText("h 内的共同时次")}</span> : null}</div>}</div>}
         {elEmpty && element && <NoLocalData el={element} />}
         {cmpOk && cmp.view === "swipe" && <SwipeHandle x={cmp.swipe} setX={x => setCmp(c => ({ ...c, swipe: x }))} aLabel={elSource?.label || ""} bLabel={bSource?.label || ""} />}
-        <button className="os-dock-toggle" onClick={() => setLeftOpen(o => !o)} title={leftOpen ? "收起面板" : "展开面板"} aria-label={leftOpen ? "收起面板" : "展开面板"}>{leftOpen ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}</button>
-        {loading > 0 && <div className="os-progress" role="status" aria-label="读取中" />}
-        {error && <div className="os-toast" role="alert" onClick={() => setError("")}>{error}<small>点击关闭</small></div>}
-        {tool === "region" && <div className="os-hint">在地图上拖拽绘制分析区域 · Esc 取消</div>}
-        {tool === "section" && <div className="os-hint">依次点击地图添加断面折点（已 {secPts.length} 个）<button disabled={secPts.length < 2} onClick={runSection}>生成断面</button><button onClick={() => { setTool("inspect"); setSecPts([]); }}>取消</button></div>}
+        <button className="os-dock-toggle" onClick={() => setLeftOpen(o => !o)} title={leftOpen ? i18nText("收起面板") : i18nText("展开面板")} aria-label={leftOpen ? i18nText("收起面板") : i18nText("展开面板")}>{leftOpen ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}</button>
+        {loading > 0 && <div className="os-progress" role="status" aria-label={i18nText("读取中")} />}
+        {error && <div className="os-toast" role="alert" onClick={() => setError("")}>{error}<small>{i18nText("点击关闭")}</small></div>}
+        {tool === "region" && <div className="os-hint">{i18nText("在地图上拖拽绘制分析区域 · Esc 取消")}</div>}
+        {tool === "section" && <div className="os-hint">{i18nText("依次点击地图添加断面折点（已") + " "}{secPts.length} {" " + i18nText("个）")}<button disabled={secPts.length < 2} onClick={runSection}>{i18nText("生成断面")}</button><button onClick={() => { setTool("inspect"); setSecPts([]); }}>{i18nText("取消")}</button></div>}
         <div ref={hoverEl} className="os-hover" />
         <Legend mode={mode} scalar={showModel && scalarId !== "none" ? scalar : null} range={range} palette={palette} bands={fieldUi.bands} field={F.current.sd && F.current.s && F.current.sd.factor < F.current.s.factor ? F.current.sd : F.current.s || null}
           flow={showModel && vector && vectorId !== "none" ? { label: vector.label, kind: flowKind, particles: flowUi.particles, arrows: flowUi.arrows } : null} obs={mode !== "model" ? obsLoaded.filter(id => !(mode === "fusion" && match && id === fusion.obs)).map(id => ({ id, label: summaries[id]?.dataset || "", v: obsVarOf(id), stops: obsStops(id) })) : []}
-          diff={profMap ? { lim: diffLim, unit: (profRun!.T || profRun!.S)!.unit, label: `剖面平均偏差（模式 − Argo）· ${profRun!.T ? "温度" : "盐度"}`, sub: "每个圆点为一条 Argo 剖面的平均偏差，点击查看该剖面" }
+          diff={profMap ? { lim: diffLim, unit: (profRun!.T || profRun!.S)!.unit, label: i18nText("剖面平均偏差（模式 − Argo）· {0}", profRun!.T ? i18nText("温度") : i18nText("盐度")), sub: i18nText("每个圆点为一条 Argo 剖面的平均偏差，点击查看该剖面") }
             : mode === "fusion" && match ? { lim: diffLim, unit: match.unit, label: match.obs_variable.label } : null} source={model}
           cmp={cmpOk ? { view: cmp.view, a: elSource?.label || "", b: bSource?.label || "", lim: diffLimCmp, unit, grid: cmpStatus?.grid || "" } : null} />
-        {present && <div className="os-present-title"><b>{mode === "obs" ? "海洋观测" : scalar?.label || "Ocean Studio"}</b><span>{fmtTime(cursor, tz)}{mode !== "obs" && model ? " · " + model.provider_label : ""}</span><button onClick={() => setPresent(false)}>退出演示 Esc</button></div>}
-        {!datasets.length && !catalogErr && <div className="os-empty"><LayersIcon size={28} /><h2>正在读取数据目录…</h2></div>}
-        {datasets.length > 0 && !datasets.some(d => d.renderable) && <div className="os-empty"><h2>数据目录中没有可展示的文件</h2><p>把 NetCDF / GRIB2 模式数据或 ERDDAP CSV 观测文件放入数据目录，并在 <code>catalog.json</code> 中登记后刷新页面。</p><button className="os-primary" onClick={() => setAbout(true)}>查看数据目录说明</button></div>}
+        {present && <div className="os-present-title"><b>{mode === "obs" ? i18nText("海洋观测") : scalar?.label || "Ocean Studio"}</b><span>{fmtTime(cursor, tz)}{mode !== "obs" && model ? " · " + model.provider_label : ""}</span><button onClick={() => setPresent(false)}>{i18nText("退出演示 Esc")}</button></div>}
+        {!datasets.length && !catalogErr && <div className="os-empty"><LayersIcon size={28} /><h2>{i18nText("正在读取数据目录…")}</h2></div>}
+        {datasets.length > 0 && !datasets.some(d => d.renderable) && <div className="os-empty"><h2>{i18nText("数据目录中没有可展示的文件")}</h2><p>{i18nText("把 NetCDF / GRIB2 模式数据或 ERDDAP CSV 观测文件放入数据目录，并在") + " "}<code>catalog.json</code> {" " + i18nText("中登记后刷新页面。")}</p><button className="os-primary" onClick={() => setAbout(true)}>{i18nText("查看数据目录说明")}</button></div>}
       </main>
       {insp && !present && <div className="os-right">
         {insp.kind === "platform" && <PlatformInspector ds={insp.ds} dsLabel={summaries[insp.ds]?.dataset || ""} pid={insp.pid} onClose={() => { setInsp(null); for (const l of obsL.current.values()) l.select(null); }} cursor={cursor} model={modelCtx}
           basket={basket} toggleBasket={(ds, pid) => setBasket(b => (b.some(x => x.ds === ds && x.pid === pid) ? b.filter(x => !(x.ds === ds && x.pid === pid)) : [...b, { ds, pid }].slice(-6)))} onShowTrack={setTrack} onSeek={t => { setPlaying(false); setCursor(t); }} tz={tz} />}
-        {insp.kind === "match" && match && <MatchInspector r={match} title="模式–观测对比" onClose={() => setInsp(null)} onFly={(lon, lat, pid) => { sm.current?.map.easeTo({ center: [lon, lat], zoom: Math.max(5, sm.current.map.getZoom()), duration: 600 }); if (fusion.obs) setInsp({ kind: "platform", ds: fusion.obs, pid }); }} />}
+        {insp.kind === "match" && match && <MatchInspector r={match} title={i18nText("模式–观测对比")} onClose={() => setInsp(null)} onFly={(lon, lat, pid) => { sm.current?.map.easeTo({ center: [lon, lat], zoom: Math.max(5, sm.current.map.getZoom()), duration: 600 }); if (fusion.obs) setInsp({ kind: "platform", ds: fusion.obs, pid }); }} />}
         {insp.kind === "point" && <PointInspector data={insp.data} near={insp.data.near || []} onClose={() => setInsp(null)} onPlatform={(ds, pid) => setInsp({ kind: "platform", ds, pid })} tz={tz} scalarLabel={scalar?.label} depthAxis={!!depthAxis} />}
         {insp.kind === "compare" && <CompareInspector data={insp.data} onClose={() => setInsp(null)} tz={tz} />}
         {insp.kind === "profiles" && profRun && <ProfileMatchInspector run={profRun} onClose={() => setInsp(null)} tz={tz} onFly={(lon, lat) => sm.current?.map.easeTo({ center: [lon, lat], zoom: Math.max(4.5, sm.current.map.getZoom()), duration: 600 })} />}
@@ -799,13 +806,13 @@ function Legend({ mode, scalar, range, palette, bands, field, flow, obs, diff, s
   const Bar = ({ lo, hi, css, u, title, sub }: { lo: number; hi: number; css: string; u: string; title: string; sub?: string }) => { const t = ticks(lo, hi);
     return <div className="lg-block"><div className="lg-t"><b>{title}</b><span>{u}</span></div><div className="lg-bar" style={{ background: css }} /><div className="lg-ticks">{t.out.map(v => <span key={v} style={{ left: `${(v - lo) / (hi - lo) * 100}%` }}>{v.toFixed(t.dec)}</span>)}</div>{sub && <small>{sub}</small>}</div>; };
   const blocks: React.ReactNode[] = [];
-  if (cmp?.view === "diff") blocks.push(<Bar key="cd" lo={-cmp.lim} hi={cmp.lim} css={gradientCss("balance")} u={cmp.unit} title={`${scalar?.label || ""}差值 A − B`} sub={`A ${cmp.a} − B ${cmp.b} · ${cmp.grid}`} />);
+  if (cmp?.view === "diff") blocks.push(<Bar key="cd" lo={-cmp.lim} hi={cmp.lim} css={gradientCss("balance")} u={cmp.unit} title={i18nText("{0}差值 A − B", scalar?.label || "")} sub={`A ${cmp.a} − B ${cmp.b} · ${cmp.grid}`} />);
   else if (scalar && range && range[1] > range[0]) blocks.push(<Bar key="s" lo={range[0]} hi={range[1]} css={bar} u={unit} title={scalar.label}
-    sub={cmp ? `A ${cmp.a} 与 B ${cmp.b} 使用同一色标` : field ? `${source?.provider_label || ""} · 显示 ${field.nx}×${field.ny}（块平均 ${field.factor}×）· GPU 双线性` : undefined} />);
-  if (flow) blocks.push(<div key="f" className="lg-flow"><i />{flow.label}{flow.particles ? "粒子流" : ""}{flow.particles && flow.arrows ? " + " : ""}{flow.arrows ? "箭头" : ""} · 参考 {flow.kind === "wind" ? "10" : flow.kind === "current" ? "0.6" : "—"} m/s{flow.kind === "wind" ? " · 风向按来向读数" : flow.kind === "current" ? " · 流向按去向" : ""}</div>);
-  for (const o of obs) { if (o.v && o.stops) blocks.push(<Bar key={o.id} lo={o.stops[0][0]} hi={o.stops[o.stops.length - 1][0]} css={`linear-gradient(90deg,${o.stops.map((s, i) => `${s[1]} ${(i / (o.stops!.length - 1) * 100).toFixed(1)}%`).join(",")})`} u={o.v.display_unit} title={`实测 · ${o.v.label}`} sub={`${o.label} · 圆点＝观测（外圈：橙 可疑 / 红 错误）`} />); }
+    sub={cmp ? i18nText("A {0} 与 B {1} 使用同一色标", cmp.a, cmp.b) : field ? i18nText("{0} · 显示 {1}×{2}（块平均 {3}×）· GPU 双线性", source?.provider_label || "", field.nx, field.ny, field.factor) : undefined} />);
+  if (flow) blocks.push(<div key="f" className="lg-flow"><i />{flow.label}{" "}{flow.particles ? i18nText("粒子流") : ""}{flow.particles && flow.arrows ? " + " : ""}{flow.arrows ? i18nText("箭头") : ""} {" " + i18nText("· 参考") + " "}{flow.kind === "wind" ? "10" : flow.kind === "current" ? "0.6" : "—"} m/s{flow.kind === "wind" ? i18nText(" · 风向按来向读数") : flow.kind === "current" ? i18nText(" · 流向按去向") : ""}</div>);
+  for (const o of obs) { if (o.v && o.stops) blocks.push(<Bar key={o.id} lo={o.stops[0][0]} hi={o.stops[o.stops.length - 1][0]} css={`linear-gradient(90deg,${o.stops.map((s, i) => `${s[1]} ${(i / (o.stops!.length - 1) * 100).toFixed(1)}%`).join(",")})`} u={o.v.display_unit} title={i18nText("实测 · {0}", o.v.label)} sub={i18nText("{0} · 圆点＝观测（外圈：橙 可疑 / 红 错误）", o.label)} />); }
   if (mode !== "model" && obs.some(o => !o.v)) blocks.push(<div key="types" className="lg-types">{Object.entries(TYPE_STYLE).slice(0, 8).map(([k, v]) => <span key={k}><i style={{ background: v.color }} />{v.label}</span>)}</div>);
-  if (diff) blocks.push(<Bar key="d" lo={-diff.lim} hi={diff.lim} css="linear-gradient(90deg,#2166ac,#67a9cf,#f7f7f7,#ef8a62,#b2182b)" u={diff.unit} title={`模式 − 观测 · ${diff.label}`} sub={diff.sub || "仅显示当前时间窗内的配对；白圈为离群配对"} />);
+  if (diff) blocks.push(<Bar key="d" lo={-diff.lim} hi={diff.lim} css="linear-gradient(90deg,#2166ac,#67a9cf,#f7f7f7,#ef8a62,#b2182b)" u={diff.unit} title={i18nText("模式 − 观测 · {0}", diff.label)} sub={diff.sub || i18nText("仅显示当前时间窗内的配对；白圈为离群配对")} />);
   if (!blocks.length) return null;
   return <div className="os-legend">{blocks}</div>;
 }
@@ -814,7 +821,7 @@ class StudioBoundary extends Component<{ children: ReactNode }, { err: string | 
   state = { err: null as string | null };
   static getDerivedStateFromError(e: any) { return { err: e?.message || String(e) }; }
   componentDidCatch(e: any) { console.error("Ocean Studio crashed", e); }
-  render() { return this.state.err ? <div className="os-crash" role="alert" style={{ padding: 32, color: "var(--text, #c9d8e6)" }}><b>Ocean Studio 出现错误</b><p>{this.state.err}</p><button onClick={() => location.reload()}>重新加载</button></div> : this.props.children; }
+  render() { return this.state.err ? <div className="os-crash" role="alert" style={{ padding: 32, color: "var(--text, #c9d8e6)" }}><b>{i18nText("Ocean Studio 出现错误")}</b><p>{this.state.err}</p><button onClick={() => location.reload()}>{i18nText("重新加载")}</button></div> : this.props.children; }
 }
 createRoot(document.getElementById("root")!).render(<StudioBoundary><StudioApp /></StudioBoundary>);
 /** Colour limit for profile-mean bias dots: twice the 5–95 % spread, symmetric. */

@@ -1,3 +1,4 @@
+import { t as i18nText } from "../../i18n";
 // SVG / canvas science charts: vertical profiles, T–S diagram with σ isopycnals, wind / current roses,
 // model–observation density scatter, histograms. Hover read-outs; PNG export.
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -5,7 +6,7 @@ import { ImageDown } from "lucide-react";
 import { useChartTheme, niceTicks, fmtN, svgToPng, download, sigma0, type ChartTheme } from "./theme";
 
 const Tools = ({ svg, name }: { svg: React.RefObject<SVGSVGElement | null>; name: string }) =>
-  <div className="os-chart-tools"><button title="导出 PNG" onClick={() => svg.current && svgToPng(svg.current, name)}><ImageDown size={13} /></button></div>;
+  <div className="os-chart-tools"><button title={i18nText("导出 PNG")} onClick={() => svg.current && svgToPng(svg.current, name)}><ImageDown size={13} /></button></div>;
 
 // ---------------------------------------------------------------- vertical profile
 export type ProfileLine = { label: string; z: number[]; v: (number | null)[]; qc?: string[]; color?: string; dash?: boolean };
@@ -13,7 +14,7 @@ export function ProfileChart({ lines, unit, zLabel, title, height = 300, exportN
   const th = useChartTheme(), svg = useRef<SVGSVGElement>(null), [hover, setHover] = useState<{ x: number; y: number; text: string } | null>(null);
   const W = 320, H = height, L = 46, R = 12, T = 12, B = 30;
   const pts = lines.flatMap(l => l.z.map((z, i) => [z, l.v[i]] as const)).filter(([z, v]) => v != null && Number.isFinite(v) && Number.isFinite(z)) as [number, number][];
-  if (pts.length < 2) return <div className="os-chart-empty">该剖面没有足够的有效数据</div>;
+  if (pts.length < 2) return <div className="os-chart-empty">{i18nText("该剖面没有足够的有效数据")}</div>;
   let x0 = Math.min(...pts.map(p => p[1])), x1 = Math.max(...pts.map(p => p[1])); if (x1 - x0 < 1e-9) { x0 -= 0.5; x1 += 0.5; } const xp = (x1 - x0) * 0.06; x0 -= xp; x1 += xp;
   const z0 = 0, z1 = Math.max(...pts.map(p => p[0])) * 1.03 || 1;
   const X = (v: number) => L + (v - x0) / (x1 - x0) * (W - L - R), Y = (z: number) => T + (z - z0) / (z1 - z0) * (H - T - B);
@@ -39,7 +40,7 @@ export function TSDiagram({ points, title, exportName = "ts-diagram", hollow }: 
   const th = useChartTheme(), svg = useRef<SVGSVGElement>(null), [hover, setHover] = useState<TSPoint | null>(null);
   const W = 320, H = 280, L = 42, R = 12, T = 12, B = 30;
   const ok = points.filter(p => Number.isFinite(p.s) && Number.isFinite(p.t));
-  if (ok.length < 2) return <div className="os-chart-empty">缺少同层位的温度与盐度，无法绘制 T–S 图</div>;
+  if (ok.length < 2) return <div className="os-chart-empty">{i18nText("缺少同层位的温度与盐度，无法绘制 T–S 图")}</div>;
   let s0 = Math.min(...ok.map(p => p.s)), s1 = Math.max(...ok.map(p => p.s)), t0 = Math.min(...ok.map(p => p.t)), t1 = Math.max(...ok.map(p => p.t));
   const ps = Math.max(0.05, (s1 - s0) * 0.08), pt = Math.max(0.2, (t1 - t0) * 0.08); s0 -= ps; s1 += ps; t0 -= pt; t1 += pt;
   const X = (s: number) => L + (s - s0) / (s1 - s0) * (W - L - R), Y = (t: number) => H - B - (t - t0) / (t1 - t0) * (H - T - B);
@@ -51,7 +52,7 @@ export function TSDiagram({ points, title, exportName = "ts-diagram", hollow }: 
     return out;
   })();
   return <div className="os-chart">
-    <div className="os-chart-head">{title && <strong>{title}</strong>}<div className="os-legend-row"><span>颜色＝深度（0 → {fmtN(zmax, 0)} m）</span>{hollow ? <><span><i className="dot" />{hollow.solidLabel}</span><span><i className="dot hollow" />{hollow.label}</span></> : groups.length > 1 && <span>{groups.length} 条剖面</span>}</div><Tools svg={svg} name={exportName} /></div>
+    <div className="os-chart-head">{title && <strong>{title}</strong>}<div className="os-legend-row"><span>{i18nText("颜色＝深度（0 →") + " "}{fmtN(zmax, 0)} m）</span>{hollow ? <><span><i className="dot" />{hollow.solidLabel}</span><span><i className="dot hollow" />{hollow.label}</span></> : groups.length > 1 && <span>{groups.length} {" " + i18nText("条剖面")}</span>}</div><Tools svg={svg} name={exportName} /></div>
     <svg ref={svg} viewBox={`0 0 ${W} ${H}`} className="os-svg" style={{ background: th.bg }} onMouseLeave={() => setHover(null)}>
       {niceTicks(t0, t1, 5).map(t => <g key={"t" + t}><line x1={L} x2={W - R} y1={Y(t)} y2={Y(t)} stroke={th.grid} /><text x={L - 5} y={Y(t) + 3} textAnchor="end" fill={th.muted} fontSize="9.5">{fmtN(t, 1)}</text></g>)}
       {niceTicks(s0, s1, 5).map(s => <g key={"s" + s}><line x1={X(s)} x2={X(s)} y1={T} y2={H - B} stroke={th.grid} /><text x={X(s)} y={H - B + 12} textAnchor="middle" fill={th.muted} fontSize="9.5">{fmtN(s, 2)}</text></g>)}
@@ -59,18 +60,18 @@ export function TSDiagram({ points, title, exportName = "ts-diagram", hollow }: 
       {iso.map(i => { const m = /M([\d.]+),([\d.]+)/.exec(i.d); return m ? <text key={"l" + i.v} x={+m[1] + 2} y={+m[2] - 3} fill={th.muted} fontSize="8.5" opacity="0.8">σt {fmtN(i.v, 1)}</text> : null; })}
       {ok.map((p, i) => { const f = Math.min(1, p.z / zmax), c = `hsl(${200 - f * 170} 80% ${62 - f * 22}%)`, open = hollow && p.group === hollow.group;
         return <circle key={i} cx={X(p.s)} cy={Y(p.t)} r={open ? 2.8 : p.qc === "bad" || p.qc === "suspect" ? 3.2 : 2.3} fill={open ? "none" : c} stroke={open ? c : p.qc === "bad" ? th.bad : p.qc === "suspect" ? th.warn : "none"} strokeWidth={open ? 1.1 : 1.2} onMouseEnter={() => setHover(p)} />; })}
-      <text x={(L + W - R) / 2} y={H - 4} textAnchor="middle" fill={th.muted} fontSize="10">实用盐度 PSU</text>
-      <text x={10} y={(T + H - B) / 2} textAnchor="middle" fill={th.muted} fontSize="10" transform={`rotate(-90 10 ${(T + H - B) / 2})`}>现场温度 °C</text>
+      <text x={(L + W - R) / 2} y={H - 4} textAnchor="middle" fill={th.muted} fontSize="10">{i18nText("实用盐度 PSU")}</text>
+      <text x={10} y={(T + H - B) / 2} textAnchor="middle" fill={th.muted} fontSize="10" transform={`rotate(-90 10 ${(T + H - B) / 2})`}>{i18nText("现场温度 °C")}</text>
       {hover && <g pointerEvents="none"><rect x={Math.min(X(hover.s) + 6, W - 176)} y={Y(hover.t) - 20} width="170" height="16" rx="3" fill={th.bg} stroke={th.grid} /><text x={Math.min(X(hover.s) + 10, W - 172)} y={Y(hover.t) - 9} fill={th.fg} fontSize="9.5">{`${hollow ? (hover.group === hollow.group ? hollow.label : hollow.solidLabel) + " · " : ""}S ${fmtN(hover.s, 3)} · T ${fmtN(hover.t, 3)} °C · ${fmtN(hover.z, 0)} m`}</text></g>}
     </svg>
-    <small className="os-chart-note">虚线为 UNESCO 1981 状态方程计算的 σt 等密度线（使用现场温度，未换算位温）。</small></div>;
+    <small className="os-chart-note">{i18nText("虚线为 UNESCO 1981 状态方程计算的 σt 等密度线（使用现场温度，未换算位温）。")}</small></div>;
 }
 
 // ---------------------------------------------------------------- rose
 export function Rose({ dir, speed, unit, convention, title, exportName = "rose" }: { dir: number[]; speed: number[]; unit: string; convention: "from" | "to"; title?: string; exportName?: string }) {
   const th = useChartTheme(), svg = useRef<SVGSVGElement>(null);
   const ok = dir.map((d, i) => [d, speed[i]] as const).filter(([d, s]) => Number.isFinite(d) && Number.isFinite(s)) as [number, number][];
-  if (ok.length < 3) return <div className="os-chart-empty">方向样本不足（{ok.length}），无法绘制玫瑰图</div>;
+  if (ok.length < 3) return <div className="os-chart-empty">{i18nText("方向样本不足（")}{ok.length}{i18nText("），无法绘制玫瑰图")}</div>;
   const sectors = 16, smax = Math.max(...ok.map(o => o[1])), edges = niceTicks(0, smax, 4).filter(x => x > 0).slice(0, 4); if (!edges.length || edges[edges.length - 1] < smax) edges.push(smax);
   const counts = Array.from({ length: sectors }, () => new Array(edges.length).fill(0));
   for (const [d, s] of ok) { const k = Math.round(((d % 360) + 360) % 360 / (360 / sectors)) % sectors; const b = edges.findIndex(e => s <= e); counts[k][b < 0 ? edges.length - 1 : b]++; }
@@ -83,9 +84,9 @@ export function Rose({ dir, speed, unit, convention, title, exportName = "rose" 
     <svg ref={svg} viewBox={`0 0 ${S} ${S}`} className="os-svg rose" style={{ background: th.bg }}>
       {[0.25, 0.5, 0.75, 1].map(f => <g key={f}><circle cx={c} cy={c} r={R * f} fill="none" stroke={th.grid} /><text x={c + 3} y={c - R * f + 10} fill={th.muted} fontSize="8.5">{fmtN(maxPct * f, 0)}%</text></g>)}
       {["N", "E", "S", "W"].map((l, i) => <text key={l} x={c + (R + 13) * Math.sin(i * Math.PI / 2)} y={c - (R + 13) * Math.cos(i * Math.PI / 2) + 4} textAnchor="middle" fill={th.fg} fontSize="11" fontWeight="600">{l}</text>)}
-      {counts.map((cs, k) => { let acc = 0; return cs.map((n, b) => { if (!n) return null; const r0 = acc / ok.length * 100 / maxPct * R; acc += n; const r1 = acc / ok.length * 100 / maxPct * R; return <path key={k + "-" + b} d={wedge(k, r0, r1)} fill={colors[b]} opacity="0.9"><title>{`${(k * 22.5).toFixed(1)}° · ≤${fmtN(edges[b], 1)} ${unit} · ${n} 条`}</title></path>; }); })}
+      {counts.map((cs, k) => { let acc = 0; return cs.map((n, b) => { if (!n) return null; const r0 = acc / ok.length * 100 / maxPct * R; acc += n; const r1 = acc / ok.length * 100 / maxPct * R; return <path key={k + "-" + b} d={wedge(k, r0, r1)} fill={colors[b]} opacity="0.9"><title>{i18nText("{0}° · ≤{1} {2} · {3} 条", (k * 22.5).toFixed(1), fmtN(edges[b], 1), unit, n)}</title></path>; }); })}
     </svg>
-    <small className="os-chart-note">{convention === "from" ? "风向为来向（气象惯例）" : "流向为去向（海洋惯例）"}；16 方位，半径为频率，n = {ok.length}。</small></div>;
+    <small className="os-chart-note">{convention === "from" ? i18nText("风向为来向（气象惯例）") : i18nText("流向为去向（海洋惯例）")}{i18nText("；16 方位，半径为频率，n =") + " "}{ok.length}。</small></div>;
 }
 
 // ---------------------------------------------------------------- model–observation scatter (canvas, density coloured)
@@ -106,19 +107,19 @@ export function Scatter({ obs, model, unit, stats, onPick, exportName = "scatter
       g.fillStyle = outlier?.[i] ? "rgba(255,77,79,0.85)" : `hsla(${205 - f * 160},85%,${48 + f * 18}%,${0.35 + f * 0.6})`; g.fillRect(X(o) - 1.1, Y(m) - 1.1, 2.2, 2.2); }
     g.strokeStyle = th.muted; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(X(lim[0]), Y(lim[0])); g.lineTo(X(lim[1]), Y(lim[1])); g.stroke(); g.setLineDash([]);
     if (stats?.slope != null) { g.strokeStyle = th.accent; g.lineWidth = 1.6; g.beginPath(); g.moveTo(X(lim[0]), Y(stats.intercept + stats.slope * lim[0])); g.lineTo(X(lim[1]), Y(stats.intercept + stats.slope * lim[1])); g.stroke(); g.lineWidth = 1; }
-    g.fillStyle = th.muted; g.font = "10px system-ui"; g.textAlign = "center"; g.fillText(`观测 ${unit}`, (L + W - R) / 2, H - 4);
-    g.save(); g.translate(11, (T + H - B) / 2); g.rotate(-Math.PI / 2); g.fillText(`模式 ${unit}`, 0, 0); g.restore();
+    g.fillStyle = th.muted; g.font = "10px system-ui"; g.textAlign = "center"; g.fillText(i18nText("观测 {0}", unit), (L + W - R) / 2, H - 4);
+    g.save(); g.translate(11, (T + H - B) / 2); g.rotate(-Math.PI / 2); g.fillText(i18nText("模式 {0}", unit), 0, 0); g.restore();
   }, [obs, model, th, lim, stats, outlier]);
   const move = (e: React.MouseEvent) => {
     const r = (e.target as HTMLCanvasElement).getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
     let best = -1, bd = 36; for (let i = 0; i < obs.length; i++) { const dx = X(obs[i]) - x, dy = Y(model[i]) - y, dd = dx * dx + dy * dy; if (dd < bd) { bd = dd; best = i; } }
-    setHover(best >= 0 ? `观测 ${fmtN(obs[best], 2)} · 模式 ${fmtN(model[best], 2)} ${unit} · 差 ${fmtN(model[best] - obs[best], 2)}` : ""); (e.target as any).dataset.pick = best;
+    setHover(best >= 0 ? i18nText("观测 {0} · 模式 {1} {2} · 差 {3}", fmtN(obs[best], 2), fmtN(model[best], 2), unit, fmtN(model[best] - obs[best], 2)) : ""); (e.target as any).dataset.pick = best;
   };
   return <div className="os-chart">
-    <div className="os-chart-head"><strong>模式 vs 观测</strong><div className="os-legend-row"><span><i className="dash" style={{ background: th.muted }} />1:1</span>{stats?.slope != null && <span><i style={{ background: th.accent }} />回归 y = {fmtN(stats.slope, 3)}x {stats.intercept >= 0 ? "+" : "−"} {fmtN(Math.abs(stats.intercept), 2)}</span>}</div>
-      <div className="os-chart-tools"><button title="导出 PNG" onClick={() => cv.current && download(cv.current.toDataURL("image/png"), exportName + ".png")}><ImageDown size={13} /></button></div></div>
+    <div className="os-chart-head"><strong>{i18nText("模式 vs 观测")}</strong><div className="os-legend-row"><span><i className="dash" style={{ background: th.muted }} />1:1</span>{stats?.slope != null && <span><i style={{ background: th.accent }} />{i18nText("回归 y =") + " "}{fmtN(stats.slope, 3)}x {stats.intercept >= 0 ? "+" : "−"} {fmtN(Math.abs(stats.intercept), 2)}</span>}</div>
+      <div className="os-chart-tools"><button title={i18nText("导出 PNG")} onClick={() => cv.current && download(cv.current.toDataURL("image/png"), exportName + ".png")}><ImageDown size={13} /></button></div></div>
     <canvas ref={cv} className="os-svg" style={{ width: "100%", aspectRatio: `${W}/${H}` }} onMouseMove={move} onMouseLeave={() => setHover("")} onClick={e => { const i = +(e.target as any).dataset.pick; if (i >= 0 && onPick) onPick(i); }} />
-    <small className="os-chart-note">{hover || `颜色为点密度（对数），红点为 5×MAD 离群配对；n = ${obs.length.toLocaleString()}${stats?.n > obs.length ? `（显示随机子样，统计用全部 ${stats.n.toLocaleString()} 对）` : ""}`}</small></div>;
+    <small className="os-chart-note">{hover || i18nText("颜色为点密度（对数），红点为 5×MAD 离群配对；n = {0}{1}", obs.length.toLocaleString(), stats?.n > obs.length ? i18nText("（显示随机子样，统计用全部 {0} 对）", stats.n.toLocaleString()) : "")}</small></div>;
 }
 
 export function Histogram({ counts, edges, unit, title, color, exportName = "histogram" }: { counts: number[]; edges: number[]; unit: string; title?: string; color?: string; exportName?: string }) {
@@ -136,5 +137,5 @@ export function Bars({ rows, label, value, unit, theme }: { rows: { name: string
   const th = useChartTheme(), t = theme || th, max = Math.max(...rows.map(r => Math.abs(r.v ?? 0)), 1e-9);
   return <div className="os-bars"><div className="os-bars-head"><span>{label}</span><span>{value}</span></div>
     {rows.map(r => <div key={r.name} className="os-bar"><span className="name" title={r.name}>{r.name}</span><span className="track"><i style={{ width: `${Math.abs(r.v ?? 0) / max * 50}%`, left: (r.v ?? 0) < 0 ? `${50 - Math.abs(r.v ?? 0) / max * 50}%` : "50%", background: (r.v ?? 0) < 0 ? "#4fa3e0" : "#f08a4b" }} /></span><b>{fmtN(r.v, 2)}</b><small>n={r.n}</small></div>)}
-    <small className="os-chart-note" style={{ color: t.muted }}>单位 {unit}；条形以 0 为中心（蓝为负、橙为正）。</small></div>;
+    <small className="os-chart-note" style={{ color: t.muted }}>{i18nText("单位") + " "}{unit}{i18nText("；条形以 0 为中心（蓝为负、橙为正）。")}</small></div>;
 }

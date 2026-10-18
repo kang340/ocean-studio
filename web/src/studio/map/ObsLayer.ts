@@ -1,14 +1,15 @@
+import { t as i18nText } from "../../i18n";
 // Observation platforms on the map: clustered at small scales, per-type icons, value colour, QC ring,
 // trajectories coloured by time (gaps dashed, implausible jumps flagged). One instance per dataset.
 import type maplibregl from "maplibre-gl";
 import type { ObsFeatures } from "../api";
 
 export const TYPE_STYLE: Record<string, { label: string; color: string; shape: string }> = {
-  argo: { label: "Argo 剖面浮标", color: "#f5b942", shape: "argo" }, animal: { label: "动物搭载 CTD", color: "#e78ac3", shape: "argo" },
-  ship_ctd: { label: "船测站位", color: "#9b8cf0", shape: "hex" }, drifter: { label: "漂流浮标", color: "#55d6be", shape: "diamond" },
-  mooring: { label: "锚系浮标", color: "#6aa9ff", shape: "square" }, tide_gauge: { label: "潮位站", color: "#ff8f6b", shape: "triangle" },
-  wave_buoy: { label: "波浪浮标", color: "#4fc3f7", shape: "wave" }, met_buoy: { label: "气象浮标", color: "#a3d977", shape: "flag" },
-  fixed: { label: "固定平台", color: "#7fb2ff", shape: "square" }, moving: { label: "移动平台（船舶 / 漂流）", color: "#ffd166", shape: "diamond" }, unknown: { label: "其他", color: "#b0bec5", shape: "circle" },
+  argo: { label: i18nText("Argo 剖面浮标"), color: "#f5b942", shape: "argo" }, animal: { label: i18nText("动物搭载 CTD"), color: "#e78ac3", shape: "argo" },
+  ship_ctd: { label: i18nText("船测站位"), color: "#9b8cf0", shape: "hex" }, drifter: { label: i18nText("漂流浮标"), color: "#55d6be", shape: "diamond" },
+  mooring: { label: i18nText("锚系浮标"), color: "#6aa9ff", shape: "square" }, tide_gauge: { label: i18nText("潮位站"), color: "#ff8f6b", shape: "triangle" },
+  wave_buoy: { label: i18nText("波浪浮标"), color: "#4fc3f7", shape: "wave" }, met_buoy: { label: i18nText("气象浮标"), color: "#a3d977", shape: "flag" },
+  fixed: { label: i18nText("固定平台"), color: "#7fb2ff", shape: "square" }, moving: { label: i18nText("移动平台（船舶 / 漂流）"), color: "#ffd166", shape: "diamond" }, unknown: { label: i18nText("其他"), color: "#b0bec5", shape: "circle" },
 };
 
 /** White glyph per platform type, drawn once into an ImageData (SDF-free, crisp at 2× DPR). */

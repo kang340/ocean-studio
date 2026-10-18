@@ -1,3 +1,4 @@
+import { t as i18nText } from "../i18n";
 // Element-first browsing: physical elements → data sources (providers) → the local file nearest in time.
 // Everything here is derived from the downloaded catalogue (/api/viz/datasets); nothing is invented.
 // Adding a provider = adding its id to `providers` of the elements it can serve (download hint only);
@@ -16,16 +17,16 @@ export type ElementDef = {
 };
 
 export const ELEMENTS: ElementDef[] = [
-  { id: "sea_temperature", label: "海温", short: "SST", ocean: true, kinds: ["sea_temperature"], providers: ["hycom", "copernicus", "era5"] },
-  { id: "salinity", label: "盐度", short: "SAL", ocean: true, kinds: ["salinity"], providers: ["hycom", "copernicus"] },
-  { id: "current", label: "海流", short: "CUR", ocean: true, kinds: ["current_speed"], vector: "current", providers: ["hycom", "copernicus"] },
-  { id: "waves", label: "海浪", short: "WAV", ocean: true, kinds: ["wave_height", "wave_period"], providers: ["wavewatch", "copernicus", "era5"] },
-  { id: "wind", label: "风场", short: "WND", ocean: false, kinds: ["wind_speed"], vector: "wind", providers: ["gfs", "era5"] },
-  { id: "pressure", label: "气压", short: "MSL", ocean: false, kinds: ["pressure"], providers: ["gfs", "era5"] },
-  { id: "air_temperature", label: "气温", short: "T2M", ocean: false, kinds: ["air_temperature"], providers: ["gfs", "era5"] },
-  { id: "precipitation", label: "降水", short: "PCP", ocean: false, kinds: ["precipitation"], providers: ["gfs", "era5"] },
-  { id: "sea_ice", label: "海冰", short: "ICE", ocean: true, kinds: ["sea_ice"], providers: ["copernicus", "era5"] },
-  { id: "ssh", label: "海面高度", short: "SSH", ocean: true, kinds: ["ssh"], providers: ["hycom", "copernicus"] },
+  { id: "sea_temperature", label: i18nText("海温"), short: "SST", ocean: true, kinds: ["sea_temperature"], providers: ["hycom", "copernicus", "era5"] },
+  { id: "salinity", label: i18nText("盐度"), short: "SAL", ocean: true, kinds: ["salinity"], providers: ["hycom", "copernicus"] },
+  { id: "current", label: i18nText("海流"), short: "CUR", ocean: true, kinds: ["current_speed"], vector: "current", providers: ["hycom", "copernicus"] },
+  { id: "waves", label: i18nText("海浪"), short: "WAV", ocean: true, kinds: ["wave_height", "wave_period"], providers: ["wavewatch", "copernicus", "era5"] },
+  { id: "wind", label: i18nText("风场"), short: "WND", ocean: false, kinds: ["wind_speed"], vector: "wind", providers: ["gfs", "era5"] },
+  { id: "pressure", label: i18nText("气压"), short: "MSL", ocean: false, kinds: ["pressure"], providers: ["gfs", "era5"] },
+  { id: "air_temperature", label: i18nText("气温"), short: "T2M", ocean: false, kinds: ["air_temperature"], providers: ["gfs", "era5"] },
+  { id: "precipitation", label: i18nText("降水"), short: "PCP", ocean: false, kinds: ["precipitation"], providers: ["gfs", "era5"] },
+  { id: "sea_ice", label: i18nText("海冰"), short: "ICE", ocean: true, kinds: ["sea_ice"], providers: ["copernicus", "era5"] },
+  { id: "ssh", label: i18nText("海面高度"), short: "SSH", ocean: true, kinds: ["ssh"], providers: ["hycom", "copernicus"] },
 ];
 export const elementById = (id: string | null | undefined) => ELEMENTS.find(e => e.id === id) || null;
 
@@ -114,21 +115,21 @@ export function elementOf(kind: string | undefined): ElementId | null {
 /** Rules that decide whether two sources can be differenced. Returns null when comparable, else the reason (Chinese, user-facing). */
 export function compareBlockers(o: { unitA: string; unitB: string; dtH: number | null; maxDtH: number; depthA: number | null; depthB: number | null; overlap: boolean }): string[] {
   const r: string[] = [];
-  if (o.unitA !== o.unitB) r.push(`单位不一致（${o.unitA || "无"} / ${o.unitB || "无"}），无法换算`);
-  if (o.dtH == null) r.push("对比数据源没有可用时间");
-  else if (o.dtH > o.maxDtH) r.push(`两数据源最接近的时次相差 ${o.dtH.toFixed(o.dtH < 10 ? 1 : 0)} h，超过 ${o.maxDtH} h 容差`);
-  if ((o.depthA == null) !== (o.depthB == null)) r.push("一方为三维分层、另一方为单层，深度不可对应");
-  else if (o.depthA != null && o.depthB != null) { const tol = Math.max(1, 0.1 * Math.abs(o.depthA)); if (Math.abs(o.depthA - o.depthB) > tol) r.push(`最接近的深度层不同（${o.depthA.toFixed(1)} m / ${o.depthB.toFixed(1)} m）`); }
-  if (!o.overlap) r.push("两数据源的空间范围不重叠");
+  if (o.unitA !== o.unitB) r.push(i18nText("单位不一致（{0} / {1}），无法换算", o.unitA || i18nText("无"), o.unitB || i18nText("无")));
+  if (o.dtH == null) r.push(i18nText("对比数据源没有可用时间"));
+  else if (o.dtH > o.maxDtH) r.push(i18nText("两数据源最接近的时次相差 {0} h，超过 {1} h 容差", o.dtH.toFixed(o.dtH < 10 ? 1 : 0), o.maxDtH));
+  if ((o.depthA == null) !== (o.depthB == null)) r.push(i18nText("一方为三维分层、另一方为单层，深度不可对应"));
+  else if (o.depthA != null && o.depthB != null) { const tol = Math.max(1, 0.1 * Math.abs(o.depthA)); if (Math.abs(o.depthA - o.depthB) > tol) r.push(i18nText("最接近的深度层不同（{0} m / {1} m）", o.depthA.toFixed(1), o.depthB.toFixed(1))); }
+  if (!o.overlap) r.push(i18nText("两数据源的空间范围不重叠"));
   return r;
 }
 
 /** Badge text / tone for a source state (no state = no task for this provider). */
 export const STATE_LABEL: Record<string, [string, "ok" | "busy" | "bad" | "muted"]> = {
-  ready: ["本地可用", "ok"], downloading: ["下载中", "busy"], queued: ["排队中", "busy"], retrying: ["重试中", "busy"], downloaded_unrenderable: ["已下载 · 不可绘制", "bad"],
-  timeout: ["下载超时", "bad"], validation_failed: ["校验失败", "bad"], error: ["下载失败", "bad"],
+  ready: [i18nText("本地可用"), "ok"], downloading: [i18nText("下载中"), "busy"], queued: [i18nText("排队中"), "busy"], retrying: [i18nText("重试中"), "busy"], downloaded_unrenderable: [i18nText("已下载 · 不可绘制"), "bad"],
+  timeout: [i18nText("下载超时"), "bad"], validation_failed: [i18nText("校验失败"), "bad"], error: [i18nText("下载失败"), "bad"],
 };
-export const REPR_LABEL: Record<string, string> = { instantaneous: "瞬时场", daily_mean: "日均（P1D）", monthly_mean: "月均" };
+export const REPR_LABEL: Record<string, string> = { instantaneous: i18nText("瞬时场"), daily_mean: i18nText("日均（P1D）"), monthly_mean: i18nText("月均") };
 /** Providers to list for an element: local sources first, then every provider with a task (any state), then the download hints. */
 export function providerRows(el: ElementDef, local: Source[], status: { provider: string; state: string }[] | null) {
   const seen = new Set(local.map(s => s.provider)), rows: { provider: string; state: string | null }[] = [];

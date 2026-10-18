@@ -1,3 +1,5 @@
+import { t as i18nText } from "../i18n";
+import { displayText, localizeDisplayData } from "../i18n/display";
 // Visualisation API client: binary field slices with an LRU cache and in-flight de-duplication.
 import { api } from "../api";
 
@@ -54,9 +56,9 @@ export async function loadField(q: FieldQuery, signal?: AbortSignal): Promise<Fi
   if (q.maxCells) params.set("max_cells", String(Math.round(q.maxCells)));
   const job = (async () => {
     const res = await fetch(`/api/viz/datasets/${encodeURIComponent(q.id)}/field?${params}`, { signal });
-    if (!res.ok) { let msg = `读取失败 (${res.status})`; try { msg = (await res.json()).detail || msg } catch { } throw new Error(msg); }
+    if (!res.ok) { let msg = i18nText("读取失败 ({0})", res.status); try { msg = (await res.json()).detail || msg } catch { } throw new Error(displayText(msg)); }
     const buf = await res.arrayBuffer(), n = new DataView(buf).getUint32(0, true);
-    const header = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, n))) as FieldHeader;
+    const header = localizeDisplayData(JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, n)))) as FieldHeader;
     const cells = header.nx * header.ny, arrays: Float32Array[] = [];
     for (let k = 0; k < header.variables.length; k++) arrays.push(new Float32Array(buf, 4 + n + k * cells * 4, cells));
     const f: Field = { ...header, arrays, key, bytes: buf.byteLength };

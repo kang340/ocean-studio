@@ -1,3 +1,4 @@
+import { t as i18nText } from "../i18n";
 // Pure helpers that turn a dataset description into selectable layers and timeline frames.
 import type { Describe, VizDataset, VizVariable, VizVector } from "./data";
 import { specFor, type Spec } from "./palettes";
@@ -11,7 +12,7 @@ export function scalarOptions(d: Describe): ScalarOpt[] {
   const out: ScalarOpt[] = [];
   for (const vec of d.vectors) if (vec.u && vec.v) {
     const u = d.variables.find(v => v.name === vec.u)!, kind = SPEED_KIND[vec.kind] || "speed", spec = specFor(kind, u.units);
-    out.push({ id: `speed:${vec.u}:${vec.v}`, label: spec.label || `${vec.label}速度`, short: `|${vec.u}, ${vec.v}|`, vars: [vec.u, vec.v], kind, units: u.units, axis: u, spec: { ...spec, unit: spec.unit || u.units }, derived: true });
+    out.push({ id: `speed:${vec.u}:${vec.v}`, label: spec.label || i18nText("{0}速度", vec.label), short: `|${vec.u}, ${vec.v}|`, vars: [vec.u, vec.v], kind, units: u.units, axis: u, spec: { ...spec, unit: spec.unit || u.units }, derived: true });
   }
   for (const v of d.variables) if (v.mapable) {
     const spec = specFor(v.kind, v.units);
@@ -75,7 +76,7 @@ export function fmtTime(iso: string | null | undefined, withYear = true) {
 }
 
 export function regionText(r?: { west: number; east: number; south: number; north: number } | null) {
-  if (!r) return "全球";
+  if (!r) return i18nText("全球");
   const lon = (v: number) => `${Math.abs(v).toFixed(2)}°${v < 0 ? "W" : "E"}`, lat = (v: number) => `${Math.abs(v).toFixed(2)}°${v < 0 ? "S" : "N"}`;
   return `${lon(r.west)} – ${lon(r.east)}，${lat(r.south)} – ${lat(r.north)}`;
 }

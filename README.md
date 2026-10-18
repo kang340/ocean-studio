@@ -1,5 +1,7 @@
 # Ocean Studio
 
+**简体中文** · [English](README.en.md)
+
 Ocean Studio 是一个在浏览器里查看全球海洋和大气数据的工作台，可以浏览数值模式网格场和现场观测，也可以把两者放在一起检验。所有数值都直接从本地的 NetCDF / GRIB2 / ERDDAP CSV 文件读取，不做插补，也不填充缺测。
 
 仓库自带约 76 MB 时间互相重叠的真实样例数据（GFS、WAVEWATCH III、CMEMS、ERA5、OSMC、Argo），克隆下来就能跑。
@@ -9,6 +11,12 @@ Ocean Studio 是一个在浏览器里查看全球海洋和大气数据的工作�
 **[打开 Ocean Studio 在线体验](https://ocean-studio-tan.vercel.app/ocean-studio.html)** · [三维风场](https://ocean-studio-tan.vercel.app/ocean-studio.html?el=wind&src=gfs&view=globe&t=2026-10-15T12:00:00Z) · [海浪对比](https://ocean-studio-tan.vercel.app/ocean-studio.html?el=waves&src=copernicus&cmp=wavewatch&cv=swipe&t=2026-10-15T00:00:00Z)
 
 在线版包含样例数据和 Python 分析 API，可直接在浏览器体验。数据为 2026 年 10 月历史样例，非实时；服务空闲后的首次加载可能需要等待冷启动。部署方式见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)。
+
+### 中英双语与作者账户
+
+右上角 **中文 / EN** 切换界面语言，选择会保存在当前浏览器中。切换时页面重新载入，并保留 URL 中的数据源、要素、时间、深度与对比场景。分享链接可添加 `lang=zh` 或 `lang=en`；链接指定的语言优先于浏览器保存的选择。菜单、提示、图表、海域标注、分析说明与 QC 说明均有英文版本，原始变量名、数据集 ID、数值和单位不变。
+
+[中文版体验](https://ocean-studio-tan.vercel.app/ocean-studio.html?lang=zh) · [English demo](https://ocean-studio-tan.vercel.app/ocean-studio.html?lang=en)。右上角 **GitHub · @kang340** 在新标签页打开[作者主页](https://github.com/kang340)。
 
 ## 35 秒实机演示
 
@@ -33,10 +41,11 @@ Ocean Studio 是一个在浏览器里查看全球海洋和大气数据的工作�
 - 现场观测：平台轨迹、剖面、QC 分级（使用 Argo、PMEL、WOCE 等的原始质量码）、CSV 导出
 - 模式–观测匹配：bias、RMSE、相关系数、散点和分时 / 分纬度统计；Argo 剖面对多层海温、盐度做垂向匹配
 - 演示模式、浅色 / 深色主题；页面状态写在 URL 里，可以直接分享
+- 中文 / English 界面、可分享的语言设置，以及作者 GitHub 主页入口
 
 ## 快速开始
 
-需要 Python ≥ 3.11 和 Node.js ≥ 20。
+建议使用 Python 3.12（与线上部署一致）和 Node.js ≥ 20。
 
 ```bash
 git clone https://github.com/kang340/ocean-studio.git
