@@ -1,0 +1,3 @@
+# Optional: only needed to read GRIB2 files of your own (the bundled samples are NetCDF).
+cfgrib==0.9.15.1
+eccodes==2.47.0

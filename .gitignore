@@ -1,0 +1,26 @@
+node_modules/
+web/dist/
+web/tsconfig.tsbuildinfo
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.env
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.idx
+
+# Local preview and release artifacts
+.playwright-cli/
+output/
+*.tsbuildinfo
+promo-video/review/
+promo-video/.hyperframes/artifacts/
+promo-video/.hyperframes/video-state*
+promo-video/.hyperframes/history-id
+promo-video/.hyperframes/*.log
+promo-video/.hyperframes/check-result.json

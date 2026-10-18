@@ -1,0 +1,99 @@
+/* Shared design tokens for the downloader and the visualisation workspace. */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --font-sans: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --bg: #f3f6f9;
+  --surface: #ffffff;
+  --surface-2: #f6f8fb;
+  --surface-3: #edf2f7;
+  --border: #e1e7ef;
+  --border-strong: #cdd6e1;
+  --text: #0f2133;
+  --ink: #0f2133;
+  --text-2: #33485c;
+  --text-3: #5f7286;
+  --text-4: #93a2b2;
+  --muted: #5f7286;
+  --accent: #0b6fa4;
+  --accent-2: #1592c4;
+  --accent-soft: #e6f2fa;
+  --accent-border: #a9cfe6;
+  --on-accent: #ffffff;
+  --success: #12805c;
+  --success-soft: #e5f5ee;
+  --warning: #9a6a0a;
+  --warning-soft: #fbf3df;
+  --warning-border: #ecd39a;
+  --danger: #b4372f;
+  --danger-soft: #fdeceb;
+  --danger-border: #f0c4bf;
+  --shadow-color: #0b2236;
+  --shadow-sm: 0 1px 2px rgb(11 34 54 / 6%);
+  --shadow-md: 0 6px 24px rgb(11 34 54 / 8%);
+  --shadow-lg: 0 18px 60px rgb(11 34 54 / 18%);
+  --nav: #071a2b;
+  --nav-bg: #071a2b;
+  --nav-text: #8ea6bb;
+  --nav-active: #13324b;
+  --nav-accent: #5fd0f0;
+  --map-ocean: #c9dbe8;
+  --map-land: #eef1ec;
+  --map-coast: #8fa6b6;
+  --map-grid: #5c7a92;
+  --glass: rgb(255 255 255 / 86%);
+  --glass-border: rgb(15 33 51 / 10%);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #07111c;
+  --surface: #0d1a28;
+  --surface-2: #112131;
+  --surface-3: #16283a;
+  --border: #1d3145;
+  --border-strong: #2a4259;
+  --text: #e3edf6;
+  --ink: #e3edf6;
+  --text-2: #b5c6d6;
+  --text-3: #8399ad;
+  --text-4: #5a6f83;
+  --muted: #8399ad;
+  --accent: #38b6e6;
+  --accent-2: #67cdf2;
+  --accent-soft: #0f2c40;
+  --accent-border: #1f4e6b;
+  --on-accent: #04121d;
+  --success: #3ccf95;
+  --success-soft: #0d2b23;
+  --warning: #e6b450;
+  --warning-soft: #2b2312;
+  --warning-border: #5a4719;
+  --danger: #f2776d;
+  --danger-soft: #2f1517;
+  --danger-border: #5b2a2b;
+  --shadow-color: #000000;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 8px 28px rgb(0 0 0 / 35%);
+  --shadow-lg: 0 20px 70px rgb(0 0 0 / 50%);
+  --nav: #040c15;
+  --nav-bg: #040c15;
+  --nav-text: #7f96ab;
+  --nav-active: #0f2537;
+  --map-ocean: #0a1726;
+  --map-land: #15222f;
+  --map-coast: #34506a;
+  --map-grid: #6f8ea8;
+  --glass: rgb(10 22 34 / 84%);
+  --glass-border: rgb(255 255 255 / 8%);
+}
+
+html, body { background: var(--bg); color: var(--text); }
+body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; font-variant-numeric: tabular-nums; }
+::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); }
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }

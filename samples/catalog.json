@@ -1,0 +1,749 @@
+{
+ "version": 1,
+ "description": "Ocean Studio 样例数据目录。path 相对于本文件所在目录。",
+ "datasets": [
+  {
+   "id": "gfs-2026101500",
+   "title": "GFS 0.25° 分析场 2026-10-15 00Z",
+   "provider": "gfs",
+   "dataset": "2026101500",
+   "format": "netcdf4",
+   "path": "gfs/gfs_2026101500_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "UGRD:10 m above ground",
+    "VGRD:10 m above ground",
+    "TMP:2 m above ground",
+    "PRMSL:mean sea level"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "gfs-2026101506",
+   "title": "GFS 0.25° 分析场 2026-10-15 06Z",
+   "provider": "gfs",
+   "dataset": "2026101506",
+   "format": "netcdf4",
+   "path": "gfs/gfs_2026101506_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "UGRD:10 m above ground",
+    "VGRD:10 m above ground",
+    "TMP:2 m above ground",
+    "PRMSL:mean sea level"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "gfs-2026101512",
+   "title": "GFS 0.25° 分析场 2026-10-15 12Z",
+   "provider": "gfs",
+   "dataset": "2026101512",
+   "format": "netcdf4",
+   "path": "gfs/gfs_2026101512_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "UGRD:10 m above ground",
+    "VGRD:10 m above ground",
+    "TMP:2 m above ground",
+    "PRMSL:mean sea level"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "gfs-2026101518",
+   "title": "GFS 0.25° 分析场 2026-10-15 18Z",
+   "provider": "gfs",
+   "dataset": "2026101518",
+   "format": "netcdf4",
+   "path": "gfs/gfs_2026101518_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "UGRD:10 m above ground",
+    "VGRD:10 m above ground",
+    "TMP:2 m above ground",
+    "PRMSL:mean sea level"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "ww3-2026101500",
+   "title": "WAVEWATCH III 2026-10-15 00Z",
+   "provider": "wavewatch",
+   "dataset": "2026101500",
+   "format": "netcdf4",
+   "path": "wavewatch/ww3_2026101500_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "HTSGW:surface",
+    "DIRPW:surface",
+    "PERPW:surface"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "ww3-2026101506",
+   "title": "WAVEWATCH III 2026-10-15 06Z",
+   "provider": "wavewatch",
+   "dataset": "2026101506",
+   "format": "netcdf4",
+   "path": "wavewatch/ww3_2026101506_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "HTSGW:surface",
+    "DIRPW:surface",
+    "PERPW:surface"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "ww3-2026101512",
+   "title": "WAVEWATCH III 2026-10-15 12Z",
+   "provider": "wavewatch",
+   "dataset": "2026101512",
+   "format": "netcdf4",
+   "path": "wavewatch/ww3_2026101512_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "HTSGW:surface",
+    "DIRPW:surface",
+    "PERPW:surface"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "ww3-2026101518",
+   "title": "WAVEWATCH III 2026-10-15 18Z",
+   "provider": "wavewatch",
+   "dataset": "2026101518",
+   "format": "netcdf4",
+   "path": "wavewatch/ww3_2026101518_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "HTSGW:surface",
+    "DIRPW:surface",
+    "PERPW:surface"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "cmems-wave-20261015",
+   "title": "CMEMS 全球海浪 西太平洋 2026-10-15",
+   "provider": "copernicus",
+   "dataset": "cmems_mod_glo_wav_anfc_0.083deg_PT3H-i",
+   "format": "netcdf4",
+   "path": "copernicus/cmems_wave_wpac_20261015.nc",
+   "region": {
+    "west": 100.0,
+    "south": 0.0,
+    "east": 180.0,
+    "north": 60.0
+   },
+   "time_start": "2026-10-15T00:00:00",
+   "time_end": "2026-10-15T18:00:00",
+   "variables": [
+    "VHM0",
+    "VMDR",
+    "VTPK"
+   ]
+  },
+  {
+   "id": "cmems-thetao-20261013",
+   "title": "CMEMS 海温（40 层）西北太平洋 2026-10-13/14",
+   "provider": "copernicus",
+   "dataset": "cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m",
+   "format": "netcdf4",
+   "path": "copernicus/cmems_thetao_nwpac_20261013.nc",
+   "region": {
+    "west": 120.0,
+    "south": 15.0,
+    "east": 150.0,
+    "north": 42.0
+   },
+   "time_start": "2026-10-13T00:00:00",
+   "time_end": "2026-10-14T00:00:00",
+   "depth_min": 0.0,
+   "depth_max": 2000.0,
+   "variables": [
+    "thetao"
+   ]
+  },
+  {
+   "id": "cmems-so-20261013",
+   "title": "CMEMS 盐度（40 层）西北太平洋 2026-10-13/14",
+   "provider": "copernicus",
+   "dataset": "cmems_mod_glo_phy-so_anfc_0.083deg_P1D-m",
+   "format": "netcdf4",
+   "path": "copernicus/cmems_so_nwpac_20261013.nc",
+   "region": {
+    "west": 120.0,
+    "south": 15.0,
+    "east": 150.0,
+    "north": 42.0
+   },
+   "time_start": "2026-10-13T00:00:00",
+   "time_end": "2026-10-14T00:00:00",
+   "depth_min": 0.0,
+   "depth_max": 2000.0,
+   "variables": [
+    "so"
+   ]
+  },
+  {
+   "id": "gfs-2026101000",
+   "title": "GFS 0.25° 分析场 2026-10-10 00Z",
+   "provider": "gfs",
+   "dataset": "2026101000",
+   "format": "netcdf4",
+   "path": "compare/gfs_2026101000_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "UGRD:10 m above ground",
+    "VGRD:10 m above ground",
+    "TMP:2 m above ground",
+    "PRMSL:mean sea level"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "gfs-2026101006",
+   "title": "GFS 0.25° 分析场 2026-10-10 06Z",
+   "provider": "gfs",
+   "dataset": "2026101006",
+   "format": "netcdf4",
+   "path": "compare/gfs_2026101006_f000.nc",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "variables": [
+    "UGRD:10 m above ground",
+    "VGRD:10 m above ground",
+    "TMP:2 m above ground",
+    "PRMSL:mean sea level"
+   ],
+   "options": {
+    "forecast_hour": 0
+   }
+  },
+  {
+   "id": "era5-20261010",
+   "title": "ERA5 单层再分析 2026-10-10 00/06Z",
+   "provider": "era5",
+   "dataset": "reanalysis-era5-single-levels",
+   "format": "netcdf4",
+   "path": "compare/era5_sfc_20261010.nc",
+   "region": {
+    "west": -180.0,
+    "south": -90.0,
+    "east": 180.0,
+    "north": 90.0
+   },
+   "time_start": "2026-10-10T00:00:00",
+   "time_end": "2026-10-10T23:00:00",
+   "variables": [
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_temperature",
+    "mean_sea_level_pressure"
+   ],
+   "options": {
+    "hours": [
+     "00:00",
+     "06:00"
+    ]
+   }
+  },
+  {
+   "id": "osmc-20261015",
+   "title": "OSMC 全球实时观测 2026-10-15",
+   "provider": "observations",
+   "dataset": "OSMC_30day",
+   "format": "csv",
+   "path": "observations/OSMC_30day_20261015.csv",
+   "region": {
+    "west": -180.0,
+    "south": -80.0,
+    "east": 180.0,
+    "north": 80.0
+   },
+   "time_start": "2026-10-15T00:00:00Z",
+   "time_end": "2026-10-15T18:00:00Z",
+   "variables": [
+    "platform_code",
+    "time",
+    "latitude",
+    "longitude",
+    "sst",
+    "windspd",
+    "slp",
+    "wvht"
+   ],
+   "url": "https://osmc.noaa.gov/erddap/tabledap/OSMC_30day",
+   "options": {
+    "station_field": "platform_code",
+    "vertical": null,
+    "vertical_units": "",
+    "identity": [],
+    "missing_values": {},
+    "source": "https://osmc.noaa.gov/erddap/info/OSMC_30day/index.html",
+    "catalog_source": "https://osmc.noaa.gov/erddap/info/OSMC_30day/index.html",
+    "variable_metadata": {
+     "platform_code": {
+      "name": "platform_code",
+      "dtype": "String",
+      "definition": "",
+      "ioos_category": "Identifier",
+      "long_name": "WMO id or Ship call sign"
+     },
+     "time": {
+      "name": "time",
+      "dtype": "double",
+      "definition": "",
+      "_CoordinateAxisType": "Time",
+      "axis": "T",
+      "ioos_category": "Time",
+      "long_name": "observation date",
+      "standard_name": "time",
+      "time_origin": "01-JAN-1970 00:00:00",
+      "units": "seconds since 1970-01-01T00:00:00Z"
+     },
+     "latitude": {
+      "name": "latitude",
+      "dtype": "double",
+      "definition": "",
+      "_CoordinateAxisType": "Lat",
+      "actual_range": "-89.0, 89.0",
+      "axis": "Y",
+      "ioos_category": "Location",
+      "long_name": "Latitude",
+      "standard_name": "latitude",
+      "units": "degrees_north"
+     },
+     "longitude": {
+      "name": "longitude",
+      "dtype": "double",
+      "definition": "",
+      "_CoordinateAxisType": "Lon",
+      "actual_range": "-180.0, 180.0",
+      "axis": "X",
+      "ioos_category": "Location",
+      "long_name": "Longitude",
+      "standard_name": "longitude",
+      "units": "degrees_east"
+     },
+     "sst": {
+      "name": "sst",
+      "dtype": "double",
+      "definition": "",
+      "ioos_category": "Temperature",
+      "long_name": "sea surface temperature",
+      "standard_name": "sea_surface_temperature",
+      "units": "Deg C"
+     },
+     "slp": {
+      "name": "slp",
+      "dtype": "double",
+      "definition": "",
+      "ioos_category": "Pressure",
+      "long_name": "sea level pressure",
+      "standard_name": "air_pressure_at_sea_level",
+      "units": "hPa"
+     },
+     "windspd": {
+      "name": "windspd",
+      "dtype": "double",
+      "definition": "",
+      "ioos_category": "Wind",
+      "long_name": "wind speed",
+      "standard_name": "wind_speed",
+      "units": "m/s"
+     },
+     "wvht": {
+      "name": "wvht",
+      "dtype": "double",
+      "definition": "",
+      "colorBarMaximum": "10.0",
+      "colorBarMinimum": "0.0",
+      "ioos_category": "Surface Waves",
+      "long_name": "sea surface wave significant height",
+      "standard_name": "sea_surface_wave_significant_height",
+      "units": "m"
+     }
+    }
+   }
+  },
+  {
+   "id": "argo-20261012",
+   "title": "Argo 剖面 西北太平洋 2026-10-12/15",
+   "provider": "observations",
+   "dataset": "ArgoFloats",
+   "format": "csv",
+   "path": "observations/ArgoFloats_nwpac_20261012.csv",
+   "region": {
+    "west": 120.0,
+    "south": 15.0,
+    "east": 150.0,
+    "north": 42.0
+   },
+   "time_start": "2026-10-12T00:00:00Z",
+   "time_end": "2026-10-15T23:59:59Z",
+   "variables": [
+    "platform_number",
+    "time",
+    "latitude",
+    "longitude",
+    "pres",
+    "cycle_number",
+    "direction",
+    "data_mode",
+    "temp_adjusted",
+    "temp_adjusted_qc",
+    "psal_adjusted",
+    "psal_adjusted_qc",
+    "temp",
+    "temp_qc",
+    "psal",
+    "psal_qc"
+   ],
+   "url": "https://erddap.ifremer.fr/erddap/tabledap/ArgoFloats",
+   "options": {
+    "station_field": "platform_number",
+    "vertical": "pres",
+    "vertical_units": "dbar",
+    "identity": [
+     "cycle_number",
+     "direction",
+     "data_mode"
+    ],
+    "missing_values": {
+     "cycle_number": [
+      99999.0
+     ],
+     "latitude": [
+      99999.0
+     ],
+     "longitude": [
+      99999.0
+     ],
+     "config_mission_number": [
+      99999.0
+     ],
+     "pres": [
+      99999.0
+     ],
+     "pres_adjusted": [
+      99999.0
+     ],
+     "pres_adjusted_error": [
+      99999.0
+     ],
+     "temp": [
+      99999.0
+     ],
+     "temp_adjusted": [
+      99999.0
+     ],
+     "temp_adjusted_error": [
+      99999.0
+     ],
+     "psal": [
+      99999.0
+     ],
+     "psal_adjusted": [
+      99999.0
+     ],
+     "psal_adjusted_error": [
+      99999.0
+     ]
+    },
+    "source": "https://erddap.ifremer.fr/erddap/info/ArgoFloats/index.html",
+    "catalog_source": "https://osmc.noaa.gov/erddap/info/ArgoFloats/index.html",
+    "variable_metadata": {
+     "platform_number": {
+      "name": "platform_number",
+      "dtype": "String",
+      "definition": "",
+      "cf_role": "trajectory_id",
+      "conventions": "WMO float identifier : A9IIIII",
+      "ioos_category": "Identifier",
+      "long_name": "Float unique identifier"
+     },
+     "cycle_number": {
+      "name": "cycle_number",
+      "dtype": "int",
+      "definition": "",
+      "_FillValue": "99999",
+      "actual_range": "0, 4148",
+      "cf_role": "profile_id",
+      "colorBarMaximum": "200.0",
+      "colorBarMinimum": "0.0",
+      "conventions": "0...N, 0 : launch cycle (if exists), 1 : first complete cycle",
+      "ioos_category": "Statistics",
+      "long_name": "Float cycle number"
+     },
+     "direction": {
+      "name": "direction",
+      "dtype": "String",
+      "definition": "",
+      "colorBarMaximum": "360.0",
+      "colorBarMinimum": "0.0",
+      "conventions": "A: ascending profiles, D: descending profiles",
+      "ioos_category": "Currents",
+      "long_name": "Direction of the station profiles"
+     },
+     "data_mode": {
+      "name": "data_mode",
+      "dtype": "String",
+      "definition": "",
+      "conventions": "R : real time; D : delayed mode; A : real time with adjustment",
+      "ioos_category": "Time",
+      "long_name": "Delayed mode or real time data"
+     },
+     "time": {
+      "name": "time",
+      "dtype": "double",
+      "definition": "",
+      "_CoordinateAxisType": "Time",
+      "actual_range": "8.7012158E8, 1.7983829E9",
+      "axis": "T",
+      "ioos_category": "Time",
+      "long_name": "Julian day (UTC) of the station relative to REFERENCE_DATE_TIME",
+      "standard_name": "time",
+      "time_origin": "01-JAN-1970 00:00:00",
+      "units": "seconds since 1970-01-01T00:00:00Z"
+     },
+     "latitude": {
+      "name": "latitude",
+      "dtype": "double",
+      "definition": "",
+      "_CoordinateAxisType": "Lat",
+      "_FillValue": "99999.0",
+      "actual_range": "-99.999, 89.97058333333334",
+      "axis": "Y",
+      "colorBarMaximum": "90.0",
+      "colorBarMinimum": "-90.0",
+      "ioos_category": "Location",
+      "long_name": "Latitude of the station, best estimate",
+      "standard_name": "latitude",
+      "units": "degrees_north",
+      "valid_max": "90.0",
+      "valid_min": "-90.0"
+     },
+     "longitude": {
+      "name": "longitude",
+      "dtype": "double",
+      "definition": "",
+      "_CoordinateAxisType": "Lon",
+      "_FillValue": "99999.0",
+      "actual_range": "-179.9998, 180.0",
+      "axis": "X",
+      "colorBarMaximum": "180.0",
+      "colorBarMinimum": "-180.0",
+      "ioos_category": "Location",
+      "long_name": "Longitude of the station, best estimate",
+      "standard_name": "longitude",
+      "units": "degrees_east",
+      "valid_max": "180.0",
+      "valid_min": "-180.0"
+     },
+     "pres": {
+      "name": "pres",
+      "dtype": "float",
+      "definition": "",
+      "_CoordinateAxisType": "Height",
+      "_FillValue": "99999.0",
+      "actual_range": "-1.701412E38, 1.327014E12",
+      "axis": "Z",
+      "C_format": "%7.1f",
+      "colorBarMaximum": "5000.0",
+      "colorBarMinimum": "0.0",
+      "FORTRAN_format": "F7.1",
+      "ioos_category": "Sea Level",
+      "long_name": "Sea water pressure, equals 0 at sea-level",
+      "sdn_parameter_urn": "SDN:P01::PRESPR01",
+      "standard_name": "sea_water_pressure",
+      "units": "decibar",
+      "valid_max": "12000.0",
+      "valid_min": "0.0"
+     },
+     "temp": {
+      "name": "temp",
+      "dtype": "float",
+      "definition": "",
+      "_FillValue": "99999.0",
+      "actual_range": "-160.168, 9999.0",
+      "C_format": "%9.3f",
+      "colorBarMaximum": "32.0",
+      "colorBarMinimum": "0.0",
+      "FORTRAN_format": "F9.3",
+      "ioos_category": "Temperature",
+      "long_name": "Sea temperature in-situ ITS-90 scale",
+      "sdn_parameter_urn": "SDN:P01::TEMPST01",
+      "standard_name": "sea_water_temperature",
+      "units": "degree_Celsius",
+      "valid_max": "40.0",
+      "valid_min": "-2.5"
+     },
+     "temp_qc": {
+      "name": "temp_qc",
+      "dtype": "String",
+      "definition": "",
+      "colorBarMaximum": "150.0",
+      "colorBarMinimum": "0.0",
+      "conventions": "Argo reference table 2",
+      "ioos_category": "Quality",
+      "long_name": "quality flag"
+     },
+     "temp_adjusted": {
+      "name": "temp_adjusted",
+      "dtype": "float",
+      "definition": "",
+      "_FillValue": "99999.0",
+      "actual_range": "-9.0, 99.999",
+      "C_format": "%9.3f",
+      "colorBarMaximum": "32.0",
+      "colorBarMinimum": "0.0",
+      "FORTRAN_format": "F9.3",
+      "ioos_category": "Temperature",
+      "long_name": "Sea temperature in-situ ITS-90 scale",
+      "standard_name": "sea_water_temperature",
+      "units": "degree_Celsius",
+      "valid_max": "40.0",
+      "valid_min": "-2.5"
+     },
+     "temp_adjusted_qc": {
+      "name": "temp_adjusted_qc",
+      "dtype": "String",
+      "definition": "",
+      "colorBarMaximum": "150.0",
+      "colorBarMinimum": "0.0",
+      "conventions": "Argo reference table 2",
+      "ioos_category": "Quality",
+      "long_name": "quality flag"
+     },
+     "psal": {
+      "name": "psal",
+      "dtype": "float",
+      "definition": "",
+      "_FillValue": "99999.0",
+      "actual_range": "-1.701412E38, 9999.0",
+      "C_format": "%9.3f",
+      "colorBarMaximum": "37.0",
+      "colorBarMinimum": "32.0",
+      "FORTRAN_format": "F9.3",
+      "ioos_category": "Salinity",
+      "long_name": "Practical salinity",
+      "sdn_parameter_urn": "SDN:P01::PSALST01",
+      "standard_name": "sea_water_practical_salinity",
+      "units": "PSU",
+      "valid_max": "41.0",
+      "valid_min": "2.0"
+     },
+     "psal_qc": {
+      "name": "psal_qc",
+      "dtype": "String",
+      "definition": "",
+      "colorBarMaximum": "150.0",
+      "colorBarMinimum": "0.0",
+      "conventions": "Argo reference table 2",
+      "ioos_category": "Quality",
+      "long_name": "quality flag"
+     },
+     "psal_adjusted": {
+      "name": "psal_adjusted",
+      "dtype": "float",
+      "definition": "",
+      "_FillValue": "99999.0",
+      "actual_range": "-999.9, 171521.4",
+      "C_format": "%9.3f",
+      "colorBarMaximum": "37.0",
+      "colorBarMinimum": "32.0",
+      "FORTRAN_format": "F9.3",
+      "ioos_category": "Salinity",
+      "long_name": "Practical salinity",
+      "standard_name": "sea_water_practical_salinity",
+      "units": "PSU",
+      "valid_max": "41.0",
+      "valid_min": "2.0"
+     },
+     "psal_adjusted_qc": {
+      "name": "psal_adjusted_qc",
+      "dtype": "String",
+      "definition": "",
+      "colorBarMaximum": "150.0",
+      "colorBarMinimum": "0.0",
+      "conventions": "Argo reference table 2",
+      "ioos_category": "Quality",
+      "long_name": "quality flag"
+     }
+    }
+   }
+  }
+ ]
+}
