@@ -12,7 +12,11 @@ Ocean Studio is an open-source browser workbench for local ocean and atmosphere 
 - Six example scenes and approximately 76 MiB of bundled, attributed real samples.
 - React / TypeScript / MapLibre GL front end; a read-only FastAPI back end.
 
-## Run locally
+## Showcase video
+
+Attached: **Ocean-Studio-showcase-X.mp4**, a 35-second 1920×1080 / 30 fps H.264 showcase with Chinese captions and no audio. It shows genuine 3D wind, wave source swipe, observations and model–observation matching from the bundled sample data. Source captures are 15 fps; captions and export are 30 fps. Video composition and capture script are included in `promo-video/`.
+
+## Installation
 
 Python 3.11+ and Node 20+ are required. Install requirements.txt, run npm ci and npm run build in web/, then python server/app.py. Open http://127.0.0.1:8000/. GRIB2 decoding needs requirements-grib.txt.
 

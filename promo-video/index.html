@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=1920,height=1080"><title>Ocean Studio Showcase</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:Studio;src:local('Segoe UI');font-weight:100 900}
+@font-face{font-family:StudioCN;src:local('Microsoft YaHei');font-weight:100 900}
+*{box-sizing:border-box;margin:0}html,body{width:1920px;height:1080px;overflow:hidden;background:#061220;color:#e4eef7;font-family:Studio,StudioCN,sans-serif}
+#root{width:100%;height:100%;position:relative;overflow:hidden;background:#061220}
+.clip{position:absolute}.scene{inset:0}.content{width:100%;height:100%;padding:100px 150px;display:flex;flex-direction:column;justify-content:center;gap:28px}
+.eyebrow{font-size:26px;letter-spacing:7px;color:#4cc3ef}.brand{font-size:146px;line-height:1.1;letter-spacing:-5px;font-weight:650}.tagline{font-size:53px;line-height:1.4;font-weight:500}.detail{font-size:29px;color:#a9bccd;line-height:1.65}.rule{width:96px;height:6px;background:#4cc3ef;transform-origin:left center}.shot{left:160px;top:128px;width:1600px;height:900px;border:1px solid #29465c;border-radius:10px;object-fit:contain;background:#08111c}
+.heading{position:absolute;left:160px;right:160px;top:36px;display:flex;align-items:center;justify-content:space-between;gap:40px}.heading h2{font-size:45px;line-height:1.3;font-weight:600;letter-spacing:-1px}.count{font-size:24px;letter-spacing:3px;color:#4cc3ef;white-space:nowrap}.foot{position:absolute;left:160px;right:160px;bottom:14px;display:flex;justify-content:space-between;gap:30px;font-size:20px;color:#a9bccd;line-height:1.4}.url{font-size:65px;color:#4cc3ef;font-weight:600;line-height:1.3}.badges{display:flex;gap:20px}.badges span{font-size:27px;padding:13px 25px;border:1px solid #29465c;border-radius:8px;color:#e4eef7;background:#08111c}
+.corner{position:absolute;right:150px;top:100px;font-size:24px;letter-spacing:4px;color:#a9bccd}.line{position:absolute;left:0;bottom:0;width:100%;height:4px;background:#4cc3ef;transform-origin:left center}.credit{position:absolute;left:150px;right:150px;bottom:72px;font-size:24px;line-height:1.6;color:#a9bccd}
+</style></head><body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="35" data-width="1920" data-height="1080">
+<section id="intro" class="clip scene" data-start="0" data-duration="3" data-track-index="1"><div class="content"><div class="eyebrow">OCEAN × ATMOSPHERE × OPEN SOURCE</div><div class="rule"></div><h1 class="brand">Ocean Studio</h1><p class="tagline">把海洋与天气，放进同一个地球。</p><p class="detail">浏览 · 对比 · 观测 · 检验</p></div></section>
+<video id="wind-video" class="clip shot" src="assets/wind.mp4" muted playsinline data-start="3" data-duration="7" data-track-index="0"></video>
+<section id="wind-title" class="clip scene" data-start="3" data-duration="7" data-track-index="1"><div class="heading"><h2>全球风场，动起来。</h2><span class="count">01 / EXPLORE</span></div><div class="foot"><span>GFS · 三维地球 · GPU 粒子流</span><span>2026 年 10 月样例数据 · 非实时</span></div></section>
+<video id="waves-video" class="clip shot" src="assets/waves.mp4" muted playsinline data-start="10" data-duration="7" data-track-index="0"></video>
+<section id="waves-title" class="clip scene" data-start="10" data-duration="7" data-track-index="1"><div class="heading"><h2>两个数据源，一眼看出差异。</h2><span class="count">02 / COMPARE</span></div><div class="foot"><span>CMEMS × WAVEWATCH III · 卷帘对比</span><span>2026 年 10 月样例数据 · 非实时</span></div></section>
+<video id="obs-video" class="clip shot" src="assets/observations.mp4" muted playsinline data-start="17" data-duration="5" data-track-index="0"></video>
+<section id="obs-title" class="clip scene" data-start="17" data-duration="5" data-track-index="1"><div class="heading"><h2>从网格场，走向真实观测。</h2><span class="count">03 / OBSERVE</span></div><div class="foot"><span>浮标 / Argo · 轨迹 · 质量控制</span><span>2026 年 10 月样例数据 · 非实时</span></div></section>
+<video id="match-video" class="clip shot" src="assets/matching.mp4" muted playsinline data-start="22" data-duration="7" data-track-index="0"></video>
+<section id="match-title" class="clip scene" data-start="22" data-duration="7" data-track-index="1"><div class="heading"><h2>让模式与观测，彼此验证。</h2><span class="count">04 / VALIDATE</span></div><div class="foot"><span>时空匹配 · Bias / RMSE / 相关系数</span><span>2026 年 10 月样例数据 · 非实时</span></div></section>
+<section id="cta" class="clip scene" data-start="29" data-duration="6" data-track-index="1"><span class="corner">OPEN SOURCE / v1.0.0</span><div class="content"><div class="eyebrow">YOUR DATA. YOUR EXPLORATION.</div><div class="rule"></div><h2 class="brand">Ocean Studio</h2><p class="tagline">已开源，欢迎体验与共建。</p><p class="url">github.com/kang340/ocean-studio</p><div class="badges"><span>NetCDF</span><span>GRIB2</span><span>CSV</span><span>MIT 源码</span></div></div><p class="credit">自带约 76 MB 真实样例 · 2026 年 10 月数据，非实时数据流<br>样例数据许可与引用见 samples/README.md</p></section>
+<div id="progress" class="line" data-layout-ignore></div>
+</div>
+<script>
+const tl=gsap.timeline({paused:true});
+tl.from('#intro .brand',{y:26,opacity:0,duration:0.6,ease:'power3.out'},0.05);
+tl.from('#intro .tagline',{y:20,opacity:0,duration:0.55,ease:'power3.out'},0.25);
+tl.from('#intro .eyebrow,#intro .detail',{opacity:0,duration:0.5},0.4);
+tl.from('#intro .rule',{scaleX:0,duration:0.7,ease:'power2.out'},0.15);
+[['wind-title',3],['waves-title',10],['obs-title',17],['match-title',22]].forEach(([id,t])=>{tl.from('#'+id+' .heading',{y:16,opacity:0,duration:0.5,ease:'power3.out'},t+0.1);tl.from('#'+id+' .foot',{opacity:0,duration:0.5},t+0.3)});
+tl.from('#cta .brand,#cta .tagline',{y:24,opacity:0,duration:0.55,stagger:0.12,ease:'power3.out'},29.1);
+tl.from('#cta .url',{y:16,opacity:0,duration:0.55,ease:'power3.out'},29.5);
+tl.from('#cta .badges,#cta .credit',{opacity:0,duration:0.5},29.85);
+tl.from('#cta .rule',{scaleX:0,duration:0.7,ease:'power2.out'},29.1);
+tl.fromTo('#progress',{scaleX:0},{scaleX:1,duration:35,ease:'none'},0);
+window.__timelines=window.__timelines||{};window.__timelines['main']=tl;
+</script></body></html>
+

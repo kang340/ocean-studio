@@ -24,3 +24,6 @@ promo-video/.hyperframes/video-state*
 promo-video/.hyperframes/history-id
 promo-video/.hyperframes/*.log
 promo-video/.hyperframes/check-result.json
+promo-video/assets/inspect.png
+promo-video/.hyperframes/render-reports/
+media/.*.hf-transaction-*/

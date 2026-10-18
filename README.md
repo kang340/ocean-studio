@@ -4,12 +4,18 @@ Ocean Studio 是一个在浏览器里查看全球海洋和大气数据的工作�
 
 仓库自带约 76 MB 时间互相重叠的真实样例数据（GFS、WAVEWATCH III、CMEMS、ERA5、OSMC、Argo），克隆下来就能跑。
 
+## 35 秒实机演示
+
+[![Ocean Studio 展示视频](media/Ocean-Studio-showcase-cover.jpg)](https://github.com/kang340/ocean-studio/releases/download/v1.0.0/Ocean-Studio-showcase-X.mp4)
+
+[播放 / 下载 MP4](https://github.com/kang340/ocean-studio/releases/download/v1.0.0/Ocean-Studio-showcase-X.mp4) · 1920×1080 · 30 fps · 中文字幕 · 无声，适合 X 信息流。展示随仓库附带的 **2026 年 10 月样例数据，并非实时数据流**。视频源码与复现步骤见 [promo-video/README.md](promo-video/README.md)，发布文案见 [docs/POST-X.md](docs/POST-X.md)。
+
 ![全球风场三维地球](docs/screenshots/wind-globe.png)
 
 | | |
 |---|---|
 | ![海浪卷帘对比](docs/screenshots/waves-swipe.png) | ![GFS − ERA5 风速差值](docs/screenshots/gfs-era5-diff.png) |
-| ![西北太平洋海温](docs/screenshots/sst-nwpac.png) | ![全球实时观测](docs/screenshots/observations.png) |
+| ![西北太平洋海温](docs/screenshots/sst-nwpac.png) | ![全球观测样例](docs/screenshots/observations.png) |
 
 ## 功能
 
