@@ -140,7 +140,7 @@ function TrackTab({ p, tz }: { p: Platform; tz: "utc" | "local" }) {
     <table className="os-table"><thead><tr><th>{i18nText("时间")}</th><th>{i18nText("间隔")}</th><th>{i18nText("距离")}</th><th>{i18nText("速度")}</th><th>{i18nText("方向")}</th><th /></tr></thead><tbody>
       {tr.time.slice(1).map((x, i) => <tr key={i} className={tr.jump[i] ? "bad" : tr.gap[i] ? "warn" : ""}><td>{fmtTime(tms(x), tz, false)}</td><td>{fmtN(tr.dt_s[i] / 3600, 2)} h</td><td>{fmtN(tr.dist_km[i], 2)} km</td><td>{fmtN(tr.speed_ms[i], 3)}</td><td>{fmtN(tr.bearing[i], 0)}°</td><td>{tr.jump[i] ? i18nText("异常跳点") : tr.gap[i] ? i18nText("缺测间隔") : ""}</td></tr>).slice(0, 400)}
     </tbody></table>
-    <small className="os-note">{i18nText("“缺测间隔”：间隔 &gt; 3 × 中位间隔且 &gt; 6 h，地图上以虚线表示，不插值；“异常跳点”：定位间速度 &gt;") + " "}{tr.speed_limit_ms} {" " + i18nText("m/s（物理上不可信）。")}</small>
+    <small className="os-note">{i18nText("“缺测间隔”：间隔 > 3 × 中位间隔且 > 6 h，地图上以虚线表示，不插值；“异常跳点”：定位间速度 >") + " "}{tr.speed_limit_ms} {" " + i18nText("m/s（物理上不可信）。")}</small>
   </div>;
 }
 const avg = (a: (number | null)[]) => { const v = a.filter((x): x is number => x != null && Number.isFinite(x)); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };

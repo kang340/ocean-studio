@@ -371,7 +371,6 @@
   "方向": "Direction",
   "异常跳点": "Suspect jump",
   "缺测间隔": "Data gap",
-  "“缺测间隔”：间隔 &gt; 3 × 中位间隔且 &gt; 6 h，地图上以虚线表示，不插值；“异常跳点”：定位间速度 &gt;": "Data gap: interval > 3 × median interval and > 6 h; shown dashed on the map without interpolation. Suspect jump: speed between positions >",
   "m/s（物理上不可信）。": "m/s (physically implausible).",
   "风玫瑰（实测）": "Wind rose (observed)",
   "风玫瑰（由 U/V 计算）": "Wind rose (derived from U/V)",
@@ -827,5 +826,6 @@
   "GFS 0.25° 分析场 2026-10-15 12Z": "GFS 0.25° analysis 2026-10-15 12Z",
   "GFS 0.25° 分析场 2026-10-15 18Z": "GFS 0.25° analysis 2026-10-15 18Z",
   "GFS 0.25° 分析场 2026-10-10 00Z": "GFS 0.25° analysis 2026-10-10 00Z",
-  "GFS 0.25° 分析场 2026-10-10 06Z": "GFS 0.25° analysis 2026-10-10 06Z"
+  "GFS 0.25° 分析场 2026-10-10 06Z": "GFS 0.25° analysis 2026-10-10 06Z",
+  "“缺测间隔”：间隔 > 3 × 中位间隔且 > 6 h，地图上以虚线表示，不插值；“异常跳点”：定位间速度 >": "Data gap: interval > 3 × median interval and > 6 h; shown dashed on the map without interpolation. Suspect jump: speed between positions >"
 }
