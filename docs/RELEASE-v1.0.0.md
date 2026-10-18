@@ -2,6 +2,8 @@
 
 Ocean Studio is an open-source browser workbench for local ocean and atmosphere model fields and in-situ observations.
 
+**[Try the online demo](https://ocean-studio-tan.vercel.app/ocean-studio.html)** — full sample data and Python API included; no installation or login required. The demo uses bundled October 2026 data, not a live feed.
+
 ## Highlights
 
 - 2D maps and a 3D globe with GPU field rendering and wind/current particles.
@@ -22,7 +24,7 @@ Python 3.11+ and Node 20+ are required. Install requirements.txt, run npm ci and
 
 ## License and samples
 
-Application source: MIT. Data remain under their original provider terms; see samples/README.md. The video uses the bundled October 2026 sample dates, rather than a live data feed. This release is a local application; the GitHub repository does not host its Python API as a public web service.
+Application source: MIT. Data remain under their original provider terms; see samples/README.md. The video and online demo use bundled October 2026 sample dates, rather than a live data feed. The online demo is hosted on Vercel; the application can also be run locally.
 
 ## Validation
 
