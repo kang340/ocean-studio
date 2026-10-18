@@ -14,6 +14,8 @@ Ocean Studio 是一个在浏览器里查看全球海洋和大气数据的工作�
 
 ### 中英双语与作者账户
 
+默认以 **3D 地球** 打开；右上角可切换 2D / 3D。二维链接使用 `view=map`，切换语言或刷新后仍保留二维视图。
+
 右上角 **中文 / EN** 切换界面语言，选择会保存在当前浏览器中。切换时页面重新载入，并保留 URL 中的数据源、要素、时间、深度与对比场景。分享链接可添加 `lang=zh` 或 `lang=en`；链接指定的语言优先于浏览器保存的选择。菜单、提示、图表、海域标注、分析说明与 QC 说明均有英文版本，原始变量名、数据集 ID、数值和单位不变。
 
 [中文版体验](https://ocean-studio-tan.vercel.app/ocean-studio.html?lang=zh) · [English demo](https://ocean-studio-tan.vercel.app/ocean-studio.html?lang=en)。右上角 **GitHub · @kang340** 在新标签页打开[作者主页](https://github.com/kang340)。

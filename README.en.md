@@ -14,6 +14,8 @@ The online application includes the sample data and Python analysis API. These a
 
 ### Language and author profile
 
+The default view is the **3D globe**. Use the top-bar 2D / 3D controls to switch. Two-dimensional scenes use `view=map`, preserving the map view across language changes and reloads.
+
 Use **中文 / EN** in the top bar to change language. The preference is saved in your browser. Switching reloads the page while retaining the source, element, time, depth and comparison scene encoded in the URL. Shared links accept `lang=zh` or `lang=en`; the link takes priority over the saved preference. Menus, tooltips, charts, sea labels, analysis explanations and QC descriptions are localized. Raw variable names, dataset IDs, numeric values and units remain unchanged.
 
 The **GitHub · @kang340** account link opens the [author’s GitHub profile](https://github.com/kang340) in a new tab.

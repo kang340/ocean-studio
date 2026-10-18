@@ -72,7 +72,7 @@ function StudioApp() {
   const [elementId, setElementId] = useState<ElementId | null>((Q.get("el") as ElementId) || null), [srcProvider, setSrcProvider] = useState<string | null>(Q.get("src"));
   const [cmp, setCmp] = useState<CompareUi>({ on: Q.get("cmp") != null, provider: Q.get("cmp") || null, view: (Q.get("cv") as CompareUi["view"]) || "swipe", opacity: 0.6, swipe: 0.5, maxDt: 3 });
   // ---- view & chrome
-  const [globe, setGlobe] = useState(Q.get("view") === "globe"), [basemap, setBasemap] = useState<"vector" | "satellite">("vector");
+  const [globe, setGlobe] = useState(Q.get("view") !== "map"), [basemap, setBasemap] = useState<"vector" | "satellite">("vector");
   const [insp, setInsp] = useState<Insp>(null), [basket, setBasket] = useState<{ ds: string; pid: string }[]>([]);
   const [tool, setTool] = useState<"inspect" | "region" | "section">("inspect"), [secPts, setSecPts] = useState<[number, number][]>([]), [present, setPresent] = useState(false), [leftOpen, setLeftOpen] = useState(true), [about, setAbout] = useState(() => !location.search && !localStorage.getItem("ocean-studio-welcomed"));
   const [loading, setLoading] = useState(0), [error, setError] = useState(""), [fieldsVersion, setFieldsVersion] = useState(0), [viewTick, setViewTick] = useState(0), [mapReady, setMapReady] = useState(false);
@@ -679,7 +679,7 @@ function StudioApp() {
   useEffect(() => { if (!playing || loading) return; const t = window.setTimeout(() => step1(1), 1000 / fps); return () => clearTimeout(t); }, [playing, loading, fps, cursor, fieldsVersion, step1]);
   useEffect(() => {
     const p = new URLSearchParams(); p.set("lang", language); p.set("mode", mode); if (modelId) p.set("model", modelId); if (scalarId) p.set("var", scalarId); if (vectorId) p.set("vec", vectorId);
-    if (obsSel.length) p.set("obs", obsSel.join(",")); if (Number.isFinite(cursor)) p.set("t", A.isoOf(cursor)); if (globe) p.set("view", "globe"); if (depth != null && depthAxis) p.set("z", String(depth));
+    if (obsSel.length) p.set("obs", obsSel.join(",")); if (Number.isFinite(cursor)) p.set("t", A.isoOf(cursor)); p.set("view", globe ? "globe" : "map"); if (depth != null && depthAxis) p.set("z", String(depth));
     if (mode === "model" && browse === "element" && elementId) { p.set("el", elementId); if (srcProvider) p.set("src", srcProvider); if (cmp.on && cmp.provider) { p.set("cmp", cmp.provider); p.set("cv", cmp.view); } }
     else if (mode === "model" && browse === "file") p.set("browse", "file");
     history.replaceState(null, "", "?" + p.toString());
