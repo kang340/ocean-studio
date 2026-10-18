@@ -8,6 +8,8 @@ Ocean Studio 已开源：3D 风场粒子流、海浪对比、浮标/Argo 观测�
 
 支持 NetCDF / GRIB2 / CSV，附真实样例。视频为历史样例，非实时。
 
+在线体验：https://ocean-studio-tan.vercel.app
+
 https://github.com/kang340/ocean-studio
 #OpenSource #DataViz
 

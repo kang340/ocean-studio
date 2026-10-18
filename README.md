@@ -4,6 +4,12 @@ Ocean Studio 是一个在浏览器里查看全球海洋和大气数据的工作�
 
 仓库自带约 76 MB 时间互相重叠的真实样例数据（GFS、WAVEWATCH III、CMEMS、ERA5、OSMC、Argo），克隆下来就能跑。
 
+## 在线体验
+
+**[打开 Ocean Studio 在线体验](https://ocean-studio-tan.vercel.app/ocean-studio.html)** · [三维风场](https://ocean-studio-tan.vercel.app/ocean-studio.html?el=wind&src=gfs&view=globe&t=2026-10-15T12:00:00Z) · [海浪对比](https://ocean-studio-tan.vercel.app/ocean-studio.html?el=waves&src=copernicus&cmp=wavewatch&cv=swipe&t=2026-10-15T00:00:00Z)
+
+在线版包含样例数据和 Python 分析 API，可直接在浏览器体验。数据为 2026 年 10 月历史样例，非实时；服务空闲后的首次加载可能需要等待冷启动。部署方式见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)。
+
 ## 35 秒实机演示
 
 [![Ocean Studio 展示视频](media/Ocean-Studio-showcase-cover.jpg)](https://github.com/kang340/ocean-studio/releases/download/v1.0.0/Ocean-Studio-showcase-X.mp4)

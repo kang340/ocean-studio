@@ -27,3 +27,7 @@ promo-video/.hyperframes/check-result.json
 promo-video/assets/inspect.png
 promo-video/.hyperframes/render-reports/
 media/.*.hf-transaction-*/
+.vercel/
+public/
+
+.vercel

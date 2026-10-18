@@ -18,7 +18,7 @@ export const SCENES: { title: string; sub: string; q: string }[] = [
   { title: "海浪双源卷帘对比", sub: "CMEMS vs WAVEWATCH III · 西太平洋", q: "el=waves&src=copernicus&cmp=wavewatch&cv=swipe&t=2026-10-15T00:00:00Z" },
   { title: "GFS − ERA5 风速差值", sub: "同一时次、统一网格逐格相减", q: "el=wind&src=gfs&cmp=era5&cv=diff&t=2026-10-10T00:00:00Z" },
   { title: "西北太平洋三维海温", sub: "CMEMS 0.083° · 40 层 · 可做垂向断面", q: "el=sea_temperature&src=copernicus" },
-  { title: "全球实时观测平台", sub: "OSMC 浮标 / 船舶 / 岸站 · QC 分级", q: "mode=obs&obs=osmc-20261015" },
+  { title: "全球观测平台样例", sub: "OSMC 浮标 / 船舶 / 岸站 · QC 分级", q: "mode=obs&obs=osmc-20261015" },
   { title: "模式–观测匹配检验", sub: "GFS / WW3 对 OSMC · Argo 剖面对 CMEMS", q: "mode=fusion&obs=osmc-20261015" },
 ];
 const KEYS: [string, string][] = [["Space", "播放 / 暂停"], ["← →", "上一 / 下一时次"], ["G", "二维 / 三维地球"], ["P", "演示模式"], ["F", "全屏"], ["Esc", "关闭面板 / 取消工具"], ["?", "打开本窗口"]];
@@ -43,7 +43,7 @@ export function AboutDialog({ datasets, onClose, onOpen }: { datasets: VizDatase
         <button className="icon" onClick={onClose} aria-label="关闭"><X size={16} /></button>
       </header>
       <section>
-        <h3><Sparkles size={14} />示例场景<small>基于随仓库附带的样例数据</small></h3>
+        <h3><Sparkles size={14} />示例场景<small>2026 年 10 月样例数据 · 非实时</small></h3>
         <div className="os-scenes">{SCENES.map((x, i) => <a key={x.q} href={"?" + x.q} className="os-scene"><i>{String(i + 1).padStart(2, "0")}</i><b>{x.title}</b><small>{x.sub}</small></a>)}</div>
       </section>
       <section>

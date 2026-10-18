@@ -1,0 +1,19 @@
+[project]
+name = "ocean-studio"
+version = "1.0.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi==0.141.1",
+  "uvicorn==0.52.4",
+  "numpy==2.3.5",
+  "pandas==2.3.3",
+  "xarray==2025.10.1",
+  "netCDF4==1.7.4",
+]
+
+[tool.vercel]
+entrypoint = "server.app:app"
+
+[tool.vercel.fastapi.static]
+cdn = true
+exclude = true

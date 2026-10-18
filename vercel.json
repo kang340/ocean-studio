@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "fastapi",
+  "buildCommand": "npm --prefix web ci && npm --prefix web run build && python tools/prepare_vercel.py",
+  "functions": {
+    "server/app.py": {
+      "maxDuration": 60,
+      "includeFiles": "samples/**",
+      "excludeFiles": "{web/node_modules/**,promo-video/**,media/**,docs/**,tests/**}"
+    }
+  }
+}
